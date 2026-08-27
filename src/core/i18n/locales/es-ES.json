@@ -1,0 +1,525 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Volver",
+    "confirm": "Confirmar",
+    "search": "Buscar...",
+    "actions": "Acciones",
+    "noData": "No se encontraron datos",
+    "success": "Operación realizada con éxito",
+    "name": "Nombre",
+    "type": "Tipo",
+    "status": "Estado",
+    "value": "Valor",
+    "date": "Fecha",
+    "description": "Descripción",
+    "select": "Seleccione...",
+    "selectFile": "Seleccionar Archivo",
+    "filters": "Filtros",
+    "new": "Nuevo",
+    "close": "Cerrar",
+    "open": "Abrir",
+    "yes": "Sí",
+    "no": "No",
+    "all": "Todos",
+    "none": "Ninguno",
+    "add": "Añadir",
+    "remove": "Eliminar",
+    "update": "Actualizar",
+    "create": "Crear",
+    "view": "Ver",
+    "details": "Detalles",
+    "total": "Total",
+    "balance": "Saldo",
+    "amount": "Importe",
+    "welcome": "Bienvenido",
+    "logout": "Salir"
+  },
+
+  "dates": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "tomorrow": "Mañana",
+    "thisWeek": "Esta semana",
+    "lastWeek": "Semana pasada",
+    "thisMonth": "Este mes",
+    "lastMonth": "Mes pasado",
+    "last30Days": "Últimos 30 días",
+    "day": "Día {{day}}",
+    "months": {
+      "january": "enero",
+      "february": "febrero",
+      "march": "marzo",
+      "april": "abril",
+      "may": "mayo",
+      "june": "junio",
+      "july": "julio",
+      "august": "agosto",
+      "september": "septiembre",
+      "october": "octubre",
+      "november": "noviembre",
+      "december": "diciembre"
+    },
+    "weekdays": {
+      "sunday": "domingo",
+      "monday": "lunes",
+      "tuesday": "martes",
+      "wednesday": "miércoles",
+      "thursday": "jueves",
+      "friday": "viernes",
+      "saturday": "sábado"
+    }
+  },
+
+  "nav": {
+    "dashboard": "Resumen",
+    "transactions": "Transacciones",
+    "accounts": "Bancos y Cuentas",
+    "creditCards": "Tarjetas de Crédito",
+    "categories": "Categorías",
+    "settings": "Configuración"
+  },
+
+  "navigation": {
+    "dashboard": "Resumen",
+    "transactions": "Transacciones",
+    "accounts": "Bancos y Cuentas",
+    "creditCards": "Tarjetas de Crédito",
+    "categories": "Categorías",
+    "settings": "Configuración"
+  },
+
+  "landing": {
+    "nav": {
+      "features": "Funcionalidades",
+      "privacy": "Privacidad",
+      "backup": "Copia de seguridad",
+      "accessSystem": "Acceder al Sistema",
+      "openMenu": "Abrir menú"
+    },
+    "hero": {
+      "badge": "100% Client-Side y Seguro",
+      "title": "Control Financiero",
+      "titleHighlight": "Sin Servidores, Sin Riesgos.",
+      "description": "El primer ERP financiero que funciona completamente en tu navegador usando <strong>IndexedDB</strong>. Tus datos nunca salen de tu dispositivo, garantizando privacidad absoluta y rendimiento instantáneo.",
+      "cta": "Comenzar Gratis",
+      "docs": "Ver Documentación"
+    },
+    "features": {
+      "title": "¿Por qué elegir una arquitectura Local-First?",
+      "subtitle": "A diferencia de los sistemas tradicionales en la nube, Financier Pro te pone en control. Eliminamos la latencia y el riesgo de filtración de datos de terceros.",
+      "storage": {
+        "title": "Almacenamiento Local",
+        "description": "Utilizamos la base de datos nativa de tu navegador. Esto significa que el sistema funciona sin conexión y carga instantáneamente, sin esperar APIs lentas."
+      },
+      "privacy": {
+        "title": "Privacidad Zero-Knowledge",
+        "description": "No vemos tus datos. Existen solo en tu disco duro. No hay \"nube\" para hackear, garantizando total confidencialidad de tus finanzas."
+      },
+      "backup": {
+        "title": "Backup y Portabilidad",
+        "description": "Genera archivos JSON cifrados de tus datos en cualquier momento. Exporta a Excel, migra de dispositivo o haz copias de seguridad con un clic."
+      }
+    },
+    "comparison": {
+      "title": "Tus datos financieros no deberían vivir en el ordenador de otra persona.",
+      "description": "La mayoría de las aplicaciones financieras almacenan tus transacciones en servidores compartidos. Financier Pro invierte esta lógica. El navegador es el sistema operativo, y la base de datos es tuya.",
+      "offlineFirst": "Funciona sin internet (Offline-First)",
+      "noFees": "Sin cuotas de servidor",
+      "compliant": "Cumplimiento total de GDPR/LGPD por diseño",
+      "terminal": {
+        "dbLocation": "Database Location:",
+        "dbLocationValue": "Localhost (IndexedDB)",
+        "externalAccess": "External Access:",
+        "externalAccessValue": "Blocked",
+        "encryption": "Encryption:",
+        "encryptionValue": "Client-Side Enabled",
+        "systemInit": "> System initialized.",
+        "connecting": "> Connecting to local storage... OK",
+        "syncDisabled": "> Syncing disabled by default for security.",
+        "ready": "> Ready."
+      }
+    },
+    "cta": {
+      "title": "¿Listo para retomar el control?",
+      "description": "Comienza a organizar tus finanzas ahora mismo. Sin registro, sin tarjeta de crédito, solo software puro.",
+      "button": "Iniciar Sistema Ahora"
+    },
+    "footer": {
+      "copyright": "© {{year}} Financier Pro. Local-First Software."
+    }
+  },
+
+  "dashboard": {
+    "title": "Dashboard",
+    "totalBalance": "Saldo Total",
+    "monthlyIncome": "Ingresos (Mes)",
+    "monthlyExpense": "Gastos (Mes)",
+    "incomeMonth": "Ingresos (Mes)",
+    "expenseMonth": "Gastos (Mes)",
+    "vsLastMonth": "vs mes anterior",
+    "vsPreviousMonth": "vs mes anterior",
+    "cashFlow": "Flujo de Caja",
+    "futureExpenses": "Gastos Futuros",
+    "futureExpensesDescription": "Gastos pendientes por categoría hasta el último vencimiento previsto.",
+    "noFutureExpenses": "No hay gastos futuros pendientes.",
+    "uncategorized": "Sin categoría",
+    "balanceEvolution": "Evolución del Saldo",
+    "accumulatedBalance": "Saldo Acumulado",
+    "income": "Ingresos",
+    "expenses": "Gastos",
+    "recentTransactions": "Transacciones Recientes",
+    "noTransactions": "No se encontraron transacciones",
+    "period": {
+      "last30Days": "Últimos 30 días",
+      "last7Days": "Últimos 7 días",
+      "thisMonth": "Este mes",
+      "lastMonth": "Mes pasado"
+    }
+  },
+
+  "accounts": {
+    "title": "Cuentas",
+    "subtitle": "Gestiona tus cuentas bancarias",
+    "searchPlaceholder": "Buscar cuentas...",
+    "new": "Nueva Cuenta",
+    "newAccount": "Nueva Cuenta",
+    "editAccount": "Editar Cuenta",
+    "newBankAccount": "Nueva Cuenta Bancaria",
+    "accountName": "Nombre de la Cuenta",
+    "accountNamePlaceholder": "Ej: Santander, Caja Chica, BBVA...",
+    "accountType": "Tipo de Cuenta",
+    "currentBalance": "Saldo Actual",
+    "balanceWarning": "Atención: Cambiar el saldo manualmente puede generar inconsistencias en los informes si no hay transacciones correspondientes.",
+    "saveAccount": "Guardar Cuenta",
+    "modal": {
+      "newTitle": "Nueva Cuenta Bancaria",
+      "editTitle": "Editar Cuenta",
+      "name": "Nombre de la Cuenta",
+      "namePlaceholder": "Ej: Santander, Caja Chica, BBVA...",
+      "type": "Tipo de Cuenta",
+      "balance": "Saldo Actual",
+      "balanceWarning": "Atención: Cambiar el saldo manualmente puede generar inconsistencias en los informes si no hay transacciones correspondientes.",
+      "save": "Guardar Cuenta"
+    },
+    "types": {
+      "bank": "Cuenta",
+      "cash": "Efectivo",
+      "card": "Tarjeta"
+    },
+    "labels": {
+      "checkingAccount": "Cuenta Corriente",
+      "cash": "Efectivo",
+      "creditCard": "Tarjeta de Crédito"
+    },
+    "emptyState": "No se encontraron cuentas con este filtro.",
+    "deleteTitle": "¿Eliminar Cuenta?",
+    "deleteMessage": "¿Estás seguro de que deseas eliminar esta cuenta? Todas las transacciones vinculadas podrían quedar huérfanas y el saldo ya no se contabilizará.",
+    "found_one": "{{count}} cuenta encontrada",
+    "found_other": "{{count}} cuentas encontradas"
+  },
+
+  "creditCards": {
+    "title": "Tarjetas de Crédito",
+    "subtitle": "Gestiona tus tarjetas de crédito",
+    "searchPlaceholder": "Buscar tarjetas...",
+    "new": "Nueva Tarjeta",
+    "newCard": "Nueva Tarjeta",
+    "editCard": "Editar Tarjeta",
+    "newCreditCard": "Nueva Tarjeta de Crédito",
+    "cardName": "Nombre de la Tarjeta",
+    "cardNamePlaceholder": "Ej: Visa Platinum, Amex Gold...",
+    "limit": "Límite",
+    "closingDay": "Día de Cierre",
+    "dueDay": "Día de Vencimiento",
+    "saveCard": "Guardar Tarjeta",
+    "label": "Tarjeta de Crédito",
+    "emptyState": "No se encontraron tarjetas.",
+    "deleteTitle": "¿Eliminar Tarjeta?",
+    "deleteMessage": "¿Estás seguro de que deseas eliminar esta tarjeta? Las transacciones vinculadas podrían verse afectadas.",
+    "closing": "Cierre",
+    "due": "Vencimiento",
+    "modal": {
+      "newTitle": "Nueva Tarjeta de Crédito",
+      "editTitle": "Editar Tarjeta",
+      "name": "Nombre de la Tarjeta",
+      "namePlaceholder": "Ej: Visa Platinum, Amex Gold...",
+      "limit": "Límite",
+      "closingDay": "Día de Cierre",
+      "dueDay": "Día de Vencimiento",
+      "save": "Guardar Tarjeta"
+    },
+    "found_one": "{{count}} tarjeta encontrada",
+    "found_other": "{{count}} tarjetas encontradas"
+  },
+
+  "categories": {
+    "title": "Categorías",
+    "subtitle": "Gestiona tus categorías de ingresos y gastos",
+    "searchPlaceholder": "Buscar categorías...",
+    "new": "Nueva Categoría",
+    "newCategory": "Nueva Categoría",
+    "editCategory": "Editar Categoría",
+    "categoryName": "Nombre de la Categoría",
+    "categoryNamePlaceholder": "Ej: Marketing, Alimentación...",
+    "movementType": "Tipo de Movimiento",
+    "typeHint": "Define dónde aparecerá esta categoría al crear transacciones.",
+    "saveCategory": "Guardar Categoría",
+    "modal": {
+      "newTitle": "Nueva Categoría",
+      "editTitle": "Editar Categoría",
+      "name": "Nombre de la Categoría",
+      "namePlaceholder": "Ej: Marketing, Alimentación...",
+      "type": "Tipo de Movimiento",
+      "typeHint": "Define dónde aparecerá esta categoría al crear transacciones.",
+      "save": "Guardar Categoría"
+    },
+    "types": {
+      "income": "Ingreso",
+      "expense": "Gasto"
+    },
+    "emptyState": "No se encontraron categorías.",
+    "deleteTitle": "¿Eliminar Categoría?",
+    "deleteMessage": "¿Estás seguro de que deseas eliminar esta categoría? Se eliminará de las opciones de nuevas transacciones.",
+    "found_one": "{{count}} categoría encontrada",
+    "found_other": "{{count}} categorías encontradas"
+  },
+
+  "transactions": {
+    "title": "Transacciones",
+    "subtitle": "Gestiona tus ingresos y gastos",
+    "new": "Nueva Transacción",
+    "search": "Buscar transacciones...",
+    "searchPlaceholder": "Buscar transacciones...",
+    "newTransaction": "Nueva Transacción",
+    "filters": {
+      "allTypes": "Todos los Tipos",
+      "allStatus": "Todos los Estados"
+    },
+    "editTransaction": "Editar Transacción",
+    "modal": {
+      "newTitle": "Nueva Transacción",
+      "editTitle": "Editar Transacción",
+      "amount": "Valor",
+      "descriptionPlaceholder": "Ej: Pago Proveedor X",
+      "method": "Método",
+      "paymentMethods": {
+        "debit": "Débito / Efectivo",
+        "credit": "Tarjeta de Crédito"
+      },
+      "card": "Tarjeta",
+      "selectCard": "Seleccione la Tarjeta...",
+      "sourceAccount": "Cuenta Origen",
+      "destinationAccount": "Cuenta Destino",
+      "installments": "Cuotas",
+      "noInterest": "sin intereses",
+      "inFull": "al contado",
+      "category": "Categoría",
+      "costCenter": "Centro de Coste",
+      "general": "General",
+      "save": "Guardar Transacción"
+    },
+    "type": "Tipo",
+    "date": "Fecha",
+    "value": "Valor",
+    "valuePlaceholder": "0,00",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Ej: Pago Proveedor X",
+    "method": "Método",
+    "debitCash": "Débito / Efectivo",
+    "creditCard": "Tarjeta de Crédito",
+    "card": "Tarjeta",
+    "selectCard": "Seleccione la Tarjeta...",
+    "sourceAccount": "Cuenta Origen",
+    "destinationAccount": "Cuenta Destino",
+    "installments": "Cuotas",
+    "category": "Categoría",
+    "noCategory": "Sin categoría",
+    "costCenter": "Centro de Coste",
+    "general": "General",
+    "status": "Estado",
+    "saveTransaction": "Guardar Transacción",
+    "types": {
+      "expense": "Gasto",
+      "income": "Ingreso",
+      "transfer": "Transf."
+    },
+    "typesLong": {
+      "expense": "Gasto",
+      "income": "Ingreso",
+      "transfer": "Transferencia"
+    },
+    "statuses": {
+      "paid": "Pagado / Realizado",
+      "pending": "Pendiente / Programado",
+      "paidShort": "Realizado",
+      "pendingShort": "Pendiente"
+    },
+    "status": {
+      "paid": "Pagado / Realizado",
+      "pending": "Pendiente / Programado"
+    },
+    "installmentFormat_one": "{{count}}x al contado",
+    "installmentFormat_other": "{{count}}x sin intereses",
+    "installmentLabel": "(Cuota {{current}}/{{total}})",
+    "columns": {
+      "date": "Fecha",
+      "description": "Descripción",
+      "category": "Categoría",
+      "account": "Cuenta",
+      "value": "Valor",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "actions": {
+      "markAsPaid": "Marcar como Pagado",
+      "markPaid": "Marcar como Pagado",
+      "revertToPending": "Revertir a Pendiente",
+      "markPending": "Revertir a Pendiente"
+    },
+    "emptyState": "No se encontraron transacciones.",
+    "emptyMonthState": "No hay transacciones este mes.",
+    "deleteTitle": "¿Eliminar Transacción?",
+    "deleteMessage": "¿Estás seguro de que deseas eliminar esta entrada? El importe no se reembolsará automáticamente del saldo.",
+    "deleteInstallment": {
+      "title": "Eliminar Cuotas",
+      "description": "Esta transacción forma parte de un plan de cuotas. ¿Cómo desea proceder?",
+      "single": "Eliminar solo esta",
+      "singleHint": "Elimina solo la cuota seleccionada.",
+      "future": "Eliminar esta y futuras",
+      "futureHint": "Elimina esta y las próximas cuotas.",
+      "all": "Eliminar todas",
+      "allHint": "Elimina todas las cuotas de la serie."
+    },
+    "views": {
+      "list": "Lista",
+      "monthly": "Mensual",
+      "singleMonth": "Mes a Mes"
+    },
+    "found_one": "{{count}} transacción encontrada",
+    "found_other": "{{count}} transacciones encontradas"
+  },
+
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Personaliza tu experiencia en el sistema",
+    "darkMode": "Modo Oscuro",
+    "lightMode": "Modo Claro",
+    "profile": {
+      "title": "Perfil",
+      "editName": "Cambiar nombre"
+    },
+    "language": {
+      "title": "Idioma",
+      "description": "Elige el idioma de la interfaz."
+    },
+    "data": {
+      "title": "Gestión de Datos",
+      "description": "Tus datos se guardan solo en este navegador (IndexedDB). Haz copias de seguridad regularmente.",
+      "export": "Exportar Backup",
+      "import": "Importar Backup",
+      "importSuccess": "¡Importación completada con éxito!",
+      "importError": "Formato inválido"
+    },
+    "danger": {
+      "title": "Zona de Peligro",
+      "description": "Eliminar toda la base de datos y reiniciar el sistema.",
+      "reset": "Reiniciar Sistema",
+      "resetModal": {
+        "title": "¿Reiniciar Sistema?",
+        "message": "Esta acción es irreversible. Todos tus datos locales se eliminarán permanentemente.",
+        "confirm": "Sí, Reiniciar Todo"
+      }
+    },
+    "theme": "Tema",
+    "themeDescription": "Elige entre modo claro u oscuro.",
+    "themes": {
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "appearance": "Apariencia",
+    "appearanceDescription": "Personaliza la apariencia del sistema."
+  },
+
+  "commandPalette": {
+    "placeholder": "¿Qué necesitas?",
+    "noResults": "No se encontraron resultados."
+  },
+
+  "onboarding": {
+    "welcome": "¡Bienvenido a Financier Pro!",
+    "subtitle": "Comencemos configurando tu perfil.",
+    "nameLabel": "¿Cómo te gustaría que te llamaran?",
+    "namePlaceholder": "Tu nombre",
+    "startButton": "Empezar a Usar"
+  },
+
+  "app": {
+    "tagline": "Enterprise Resource Planning",
+    "headerSubtitle": "Gestiona tus finanzas con inteligencia",
+    "defaultUser": "Usuario",
+    "defaultEmail": "usuario@local",
+    "openNavigation": "Abrir navegación",
+    "close": "Cerrar",
+    "darkMode": "Modo Oscuro",
+    "lightMode": "Modo Claro",
+    "toggleTheme": "Cambiar tema",
+    "search": "Buscar..."
+  },
+
+  "validation": {
+    "required": "Campo obligatorio",
+    "invalidEmail": "Email inválido",
+    "invalidNumber": "Número inválido",
+    "minValue": "Valor mínimo: {{min}}",
+    "maxValue": "Valor máximo: {{max}}",
+    "invalidDate": "Fecha inválida",
+    "positiveNumber": "El valor debe ser positivo",
+    "selectOption": "Seleccione una opción"
+  },
+
+  "errors": {
+    "generic": "Ocurrió un error inesperado",
+    "network": "Error de conexión",
+    "notFound": "No encontrado",
+    "deleteError": "Error al eliminar",
+    "saveError": "Error al guardar",
+    "loadError": "Error al cargar datos",
+    "importError": "Error al importar",
+    "exportError": "Error al exportar",
+    "invalidFormat": "Formato inválido"
+  },
+
+  "success": {
+    "saved": "¡Guardado con éxito!",
+    "deleted": "¡Eliminado con éxito!",
+    "imported": "¡Importado con éxito!",
+    "exported": "¡Exportado con éxito!",
+    "updated": "¡Actualizado con éxito!"
+  },
+
+  "badges": {
+    "income": "Ingreso",
+    "expense": "Gasto",
+    "transfer": "Transferencia",
+    "paid": "Realizado",
+    "pending": "Pendiente",
+    "bank": "Cuenta Corriente",
+    "cash": "Efectivo",
+    "card": "Tarjeta de Crédito"
+  },
+
+  "modals": {
+    "confirmation": {
+      "title": "Confirmación",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
+    }
+  }
+}

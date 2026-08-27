@@ -1,0 +1,158 @@
+/**
+ * Lista de Contas
+ * Exibe e gerencia contas bancárias (CRUD)
+ */
+
+import { ConfirmationModal } from '@/components/shared';
+import { Badge, Button, Card } from '@/components/ui';
+import { db } from '@/core/database';
+import { useData } from '@/core/hooks';
+import { useI18n } from '@/core/i18n';
+import type { Account } from '@/types';
+import { Landmark, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { AccountModal } from './AccountModal';
+
+export const AccountList = () => {
+  const { t, formatCurrency } = useI18n();
+  const accounts = useData<Account>('accounts');
+  const [filter, setFilter] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<Account | null>(null);
+
+  // State for Custom Confirmation Modal
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  const initiateDelete = (id: number) => {
+    setDeleteId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (deleteId) {
+      try {
+        await db.delete('accounts', deleteId);
+      } catch (err) {
+        console.error('Erro ao excluir conta:', err);
+      }
+      setDeleteId(null);
+    }
+  };
+
+  const openEdit = (acc: Account) => {
+    setEditingAccount(acc);
+    setIsModalOpen(true);
+  };
+
+  const openNew = () => {
+    setEditingAccount(null);
+    setIsModalOpen(true);
+  };
+
+  const filteredAccounts = accounts.filter(
+    (acc) =>
+      acc.name.toLowerCase().includes(filter.toLowerCase()) ||
+      acc.type.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="relative w-full sm:w-96">
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400 dark:text-slate-500" />
+          <input
+            type="text"
+            placeholder={t('accounts.searchPlaceholder')}
+            className="pl-10 pr-4 py-2 w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-slate-400 dark:placeholder-slate-500"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          />
+        </div>
+        <Button onClick={openNew} icon={Plus}>
+          {t('accounts.newAccount')}
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredAccounts.map((acc) => (
+          <Card
+            key={acc.id}
+            className="p-6 relative group hover:border-indigo-200 dark:hover:border-indigo-800 transition-colors"
+          >
+            <div className="absolute top-4 right-4 flex gap-2 z-10">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openEdit(acc);
+                }}
+                className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-100 dark:border-slate-700"
+              >
+                <Pencil className="w-4 h-4" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (acc.id) initiateDelete(acc.id);
+                }}
+                className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-100 dark:border-slate-700"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-4 mb-4">
+              <div
+                className={`p-3 rounded-lg ${
+                  acc.type === 'bank'
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                    : acc.type === 'cash'
+                      ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400'
+                }`}
+              >
+                <Landmark className="w-6 h-6" />
+              </div>
+              <div>
+                <h4 className="font-bold text-slate-800 dark:text-white">{acc.name}</h4>
+                <Badge variant={acc.type}>{t(`accounts.types.${acc.type}`)}</Badge>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium">
+                {t('accounts.currentBalance')}
+              </p>
+              <p
+                className={`text-2xl font-bold ${
+                  acc.balance >= 0 ? 'text-slate-900 dark:text-white' : 'text-red-600 dark:text-red-400'
+                }`}
+              >
+                {formatCurrency(acc.balance)}
+              </p>
+            </div>
+          </Card>
+        ))}
+
+        {/* Empty State / Add New Card */}
+        {filteredAccounts.length === 0 && (
+          <div className="col-span-full p-8 text-center text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg">
+            {t('accounts.emptyState')}
+          </div>
+        )}
+      </div>
+
+      <AccountModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        accountToEdit={editingAccount}
+      />
+
+      <ConfirmationModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
+        title={t('accounts.deleteTitle')}
+        message={t('accounts.deleteMessage')}
+      />
+    </div>
+  );
+};

@@ -1,0 +1,525 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "confirm": "Confirm",
+    "search": "Search...",
+    "actions": "Actions",
+    "noData": "No data found",
+    "success": "Operation completed successfully",
+    "name": "Name",
+    "type": "Type",
+    "status": "Status",
+    "value": "Value",
+    "date": "Date",
+    "description": "Description",
+    "select": "Select...",
+    "selectFile": "Select File",
+    "filters": "Filters",
+    "new": "New",
+    "close": "Close",
+    "open": "Open",
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "none": "None",
+    "add": "Add",
+    "remove": "Remove",
+    "update": "Update",
+    "create": "Create",
+    "view": "View",
+    "details": "Details",
+    "total": "Total",
+    "balance": "Balance",
+    "amount": "Amount",
+    "welcome": "Welcome",
+    "logout": "Logout"
+  },
+
+  "dates": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "thisWeek": "This week",
+    "lastWeek": "Last week",
+    "thisMonth": "This month",
+    "lastMonth": "Last month",
+    "last30Days": "Last 30 days",
+    "day": "Day {{day}}",
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "weekdays": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    }
+  },
+
+  "nav": {
+    "dashboard": "Overview",
+    "transactions": "Transactions",
+    "accounts": "Banks & Accounts",
+    "creditCards": "Credit Cards",
+    "categories": "Categories",
+    "settings": "Settings"
+  },
+
+  "navigation": {
+    "dashboard": "Overview",
+    "transactions": "Transactions",
+    "accounts": "Banks & Accounts",
+    "creditCards": "Credit Cards",
+    "categories": "Categories",
+    "settings": "Settings"
+  },
+
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "privacy": "Privacy",
+      "backup": "Backup",
+      "accessSystem": "Access System",
+      "openMenu": "Open menu"
+    },
+    "hero": {
+      "badge": "100% Client-Side & Secure",
+      "title": "Financial Control",
+      "titleHighlight": "No Servers, No Risks.",
+      "description": "The first financial ERP that runs entirely in your browser using <strong>IndexedDB</strong>. Your data never leaves your device, ensuring absolute privacy and instant performance.",
+      "cta": "Get Started Free",
+      "docs": "View Documentation"
+    },
+    "features": {
+      "title": "Why choose a Local-First architecture?",
+      "subtitle": "Unlike traditional cloud systems, Financier Pro puts you in control. We eliminate latency and the risk of third-party data leaks.",
+      "storage": {
+        "title": "Local Storage",
+        "description": "We use your browser's native database. This means the system works offline and loads instantly, without waiting for slow APIs."
+      },
+      "privacy": {
+        "title": "Zero-Knowledge Privacy",
+        "description": "We don't see your data. It exists only on your hard drive. There's no \"cloud\" to be hacked, ensuring complete confidentiality of your finances."
+      },
+      "backup": {
+        "title": "Backup and Portability",
+        "description": "Generate encrypted JSON files of your data anytime. Export to Excel, migrate devices, or make cold backups with one click."
+      }
+    },
+    "comparison": {
+      "title": "Your financial data shouldn't live on someone else's computer.",
+      "description": "Most financial apps store your transactions on shared servers. Financier Pro flips this logic. The browser is the operating system, and the database is yours.",
+      "offlineFirst": "Works without internet (Offline-First)",
+      "noFees": "No server fees",
+      "compliant": "Full GDPR/LGPD compliance by design",
+      "terminal": {
+        "dbLocation": "Database Location:",
+        "dbLocationValue": "Localhost (IndexedDB)",
+        "externalAccess": "External Access:",
+        "externalAccessValue": "Blocked",
+        "encryption": "Encryption:",
+        "encryptionValue": "Client-Side Enabled",
+        "systemInit": "> System initialized.",
+        "connecting": "> Connecting to local storage... OK",
+        "syncDisabled": "> Syncing disabled by default for security.",
+        "ready": "> Ready."
+      }
+    },
+    "cta": {
+      "title": "Ready to take back control?",
+      "description": "Start organizing your finances now. No signup, no credit card, just pure software.",
+      "button": "Start System Now"
+    },
+    "footer": {
+      "copyright": "© {{year}} Financier Pro. Local-First Software."
+    }
+  },
+
+  "dashboard": {
+    "title": "Dashboard",
+    "totalBalance": "Total Balance",
+    "monthlyIncome": "Monthly Income",
+    "monthlyExpense": "Monthly Expenses",
+    "incomeMonth": "Monthly Income",
+    "expenseMonth": "Monthly Expenses",
+    "vsLastMonth": "vs last month",
+    "vsPreviousMonth": "vs last month",
+    "cashFlow": "Cash Flow",
+    "futureExpenses": "Future Expenses",
+    "futureExpensesDescription": "Pending expenses by category through the last expected due date.",
+    "noFutureExpenses": "No pending future expenses.",
+    "uncategorized": "Uncategorized",
+    "balanceEvolution": "Balance Evolution",
+    "accumulatedBalance": "Accumulated Balance",
+    "income": "Income",
+    "expenses": "Expenses",
+    "recentTransactions": "Recent Transactions",
+    "noTransactions": "No transactions found",
+    "period": {
+      "last30Days": "Last 30 days",
+      "last7Days": "Last 7 days",
+      "thisMonth": "This month",
+      "lastMonth": "Last month"
+    }
+  },
+
+  "accounts": {
+    "title": "Accounts",
+    "subtitle": "Manage your bank accounts",
+    "searchPlaceholder": "Search accounts...",
+    "new": "New Account",
+    "newAccount": "New Account",
+    "editAccount": "Edit Account",
+    "newBankAccount": "New Bank Account",
+    "accountName": "Account Name",
+    "accountNamePlaceholder": "E.g.: Chase, Petty Cash, Wells Fargo...",
+    "accountType": "Account Type",
+    "currentBalance": "Current Balance",
+    "balanceWarning": "Warning: Manually changing the balance may cause inconsistencies in reports if there are no corresponding transactions.",
+    "saveAccount": "Save Account",
+    "modal": {
+      "newTitle": "New Bank Account",
+      "editTitle": "Edit Account",
+      "name": "Account Name",
+      "namePlaceholder": "E.g.: Chase, Petty Cash, Wells Fargo...",
+      "type": "Account Type",
+      "balance": "Current Balance",
+      "balanceWarning": "Warning: Manually changing the balance may cause inconsistencies in reports if there are no corresponding transactions.",
+      "save": "Save Account"
+    },
+    "types": {
+      "bank": "Account",
+      "cash": "Cash",
+      "card": "Card"
+    },
+    "labels": {
+      "checkingAccount": "Checking Account",
+      "cash": "Cash",
+      "creditCard": "Credit Card"
+    },
+    "emptyState": "No accounts found with this filter.",
+    "deleteTitle": "Delete Account?",
+    "deleteMessage": "Are you sure you want to delete this account? All linked transactions may become orphaned and the balance will no longer be counted.",
+    "found_one": "{{count}} account found",
+    "found_other": "{{count}} accounts found"
+  },
+
+  "creditCards": {
+    "title": "Credit Cards",
+    "subtitle": "Manage your credit cards",
+    "searchPlaceholder": "Search cards...",
+    "new": "New Card",
+    "newCard": "New Card",
+    "editCard": "Edit Card",
+    "newCreditCard": "New Credit Card",
+    "cardName": "Card Name",
+    "cardNamePlaceholder": "E.g.: Chase Sapphire, Amex Platinum...",
+    "limit": "Limit",
+    "closingDay": "Closing Day",
+    "dueDay": "Due Day",
+    "saveCard": "Save Card",
+    "label": "Credit Card",
+    "emptyState": "No cards found.",
+    "deleteTitle": "Delete Card?",
+    "deleteMessage": "Are you sure you want to delete this card? Linked transactions may be affected.",
+    "closing": "Closing",
+    "due": "Due",
+    "modal": {
+      "newTitle": "New Credit Card",
+      "editTitle": "Edit Card",
+      "name": "Card Name",
+      "namePlaceholder": "E.g.: Chase Sapphire, Amex Platinum...",
+      "limit": "Limit",
+      "closingDay": "Closing Day",
+      "dueDay": "Due Day",
+      "save": "Save Card"
+    },
+    "found_one": "{{count}} card found",
+    "found_other": "{{count}} cards found"
+  },
+
+  "categories": {
+    "title": "Categories",
+    "subtitle": "Manage your income and expense categories",
+    "searchPlaceholder": "Search categories...",
+    "new": "New Category",
+    "newCategory": "New Category",
+    "editCategory": "Edit Category",
+    "categoryName": "Category Name",
+    "categoryNamePlaceholder": "E.g.: Marketing, Food...",
+    "movementType": "Movement Type",
+    "typeHint": "Defines where this category will appear when creating transactions.",
+    "saveCategory": "Save Category",
+    "modal": {
+      "newTitle": "New Category",
+      "editTitle": "Edit Category",
+      "name": "Category Name",
+      "namePlaceholder": "E.g.: Marketing, Food...",
+      "type": "Movement Type",
+      "typeHint": "Defines where this category will appear when creating transactions.",
+      "save": "Save Category"
+    },
+    "types": {
+      "income": "Income",
+      "expense": "Expense"
+    },
+    "emptyState": "No categories found.",
+    "deleteTitle": "Delete Category?",
+    "deleteMessage": "Are you sure you want to delete this category? It will be removed from new transaction options.",
+    "found_one": "{{count}} category found",
+    "found_other": "{{count}} categories found"
+  },
+
+  "transactions": {
+    "title": "Transactions",
+    "subtitle": "Manage your income and expenses",
+    "new": "New Transaction",
+    "search": "Search transactions...",
+    "searchPlaceholder": "Search transactions...",
+    "newTransaction": "New Transaction",
+    "filters": {
+      "allTypes": "All Types",
+      "allStatus": "All Status"
+    },
+    "editTransaction": "Edit Transaction",
+    "modal": {
+      "newTitle": "New Transaction",
+      "editTitle": "Edit Transaction",
+      "amount": "Amount",
+      "descriptionPlaceholder": "E.g.: Vendor Payment X",
+      "method": "Method",
+      "paymentMethods": {
+        "debit": "Debit / Cash",
+        "credit": "Credit Card"
+      },
+      "card": "Card",
+      "selectCard": "Select Card...",
+      "sourceAccount": "Source Account",
+      "destinationAccount": "Destination Account",
+      "installments": "Installments",
+      "noInterest": "no interest",
+      "inFull": "full payment",
+      "category": "Category",
+      "costCenter": "Cost Center",
+      "general": "General",
+      "save": "Save Transaction"
+    },
+    "type": "Type",
+    "date": "Date",
+    "value": "Value",
+    "valuePlaceholder": "0.00",
+    "description": "Description",
+    "descriptionPlaceholder": "E.g.: Vendor Payment X",
+    "method": "Method",
+    "debitCash": "Debit / Cash",
+    "creditCard": "Credit Card",
+    "card": "Card",
+    "selectCard": "Select Card...",
+    "sourceAccount": "Source Account",
+    "destinationAccount": "Destination Account",
+    "installments": "Installments",
+    "category": "Category",
+    "noCategory": "No category",
+    "costCenter": "Cost Center",
+    "general": "General",
+    "status": "Status",
+    "saveTransaction": "Save Transaction",
+    "types": {
+      "expense": "Expense",
+      "income": "Income",
+      "transfer": "Transfer"
+    },
+    "typesLong": {
+      "expense": "Expense",
+      "income": "Income",
+      "transfer": "Transfer"
+    },
+    "statuses": {
+      "paid": "Paid / Completed",
+      "pending": "Pending / Scheduled",
+      "paidShort": "Completed",
+      "pendingShort": "Pending"
+    },
+    "status": {
+      "paid": "Paid / Completed",
+      "pending": "Pending / Scheduled"
+    },
+    "installmentFormat_one": "{{count}}x full payment",
+    "installmentFormat_other": "{{count}}x no interest",
+    "installmentLabel": "(Inst. {{current}}/{{total}})",
+    "columns": {
+      "date": "Date",
+      "description": "Description",
+      "category": "Category",
+      "account": "Account",
+      "value": "Value",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "markAsPaid": "Mark as Paid",
+      "markPaid": "Mark as Paid",
+      "revertToPending": "Revert to Pending",
+      "markPending": "Revert to Pending"
+    },
+    "emptyState": "No transactions found.",
+    "emptyMonthState": "No transactions this month.",
+    "deleteTitle": "Delete Transaction?",
+    "deleteMessage": "Are you sure you want to delete this entry? The amount will not be automatically refunded from the balance.",
+    "deleteInstallment": {
+      "title": "Delete Installment",
+      "description": "This transaction is part of an installment plan. How would you like to proceed?",
+      "single": "Delete only this one",
+      "singleHint": "Removes only the selected installment.",
+      "future": "Delete this and future",
+      "futureHint": "Removes this and upcoming installments.",
+      "all": "Delete all",
+      "allHint": "Removes all installments in the series."
+    },
+    "views": {
+      "list": "List",
+      "monthly": "Monthly",
+      "singleMonth": "Month by Month"
+    },
+    "found_one": "{{count}} transaction found",
+    "found_other": "{{count}} transactions found"
+  },
+
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Customize your system experience",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "profile": {
+      "title": "Profile",
+      "editName": "Change name"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose the interface language."
+    },
+    "data": {
+      "title": "Data Management",
+      "description": "Your data is saved only in this browser (IndexedDB). Make regular backups.",
+      "export": "Export Backup",
+      "import": "Import Backup",
+      "importSuccess": "Import completed successfully!",
+      "importError": "Invalid format"
+    },
+    "danger": {
+      "title": "Danger Zone",
+      "description": "Delete entire database and reset the system.",
+      "reset": "Reset System",
+      "resetModal": {
+        "title": "Reset System?",
+        "message": "This action is irreversible. All your local data will be permanently deleted.",
+        "confirm": "Yes, Reset Everything"
+      }
+    },
+    "theme": "Theme",
+    "themeDescription": "Choose between light or dark mode.",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "appearance": "Appearance",
+    "appearanceDescription": "Customize the system appearance."
+  },
+
+  "commandPalette": {
+    "placeholder": "What do you need?",
+    "noResults": "No results found."
+  },
+
+  "onboarding": {
+    "welcome": "Welcome to Financier Pro!",
+    "subtitle": "Let's start by setting up your profile.",
+    "nameLabel": "What would you like to be called?",
+    "namePlaceholder": "Your name",
+    "startButton": "Start Using"
+  },
+
+  "app": {
+    "tagline": "Enterprise Resource Planning",
+    "headerSubtitle": "Manage your finances intelligently",
+    "defaultUser": "User",
+    "defaultEmail": "user@local",
+    "openNavigation": "Open navigation",
+    "close": "Close",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "toggleTheme": "Toggle theme",
+    "search": "Search..."
+  },
+
+  "validation": {
+    "required": "Required field",
+    "invalidEmail": "Invalid email",
+    "invalidNumber": "Invalid number",
+    "minValue": "Minimum value: {{min}}",
+    "maxValue": "Maximum value: {{max}}",
+    "invalidDate": "Invalid date",
+    "positiveNumber": "Value must be positive",
+    "selectOption": "Select an option"
+  },
+
+  "errors": {
+    "generic": "An unexpected error occurred",
+    "network": "Connection error",
+    "notFound": "Not found",
+    "deleteError": "Error deleting",
+    "saveError": "Error saving",
+    "loadError": "Error loading data",
+    "importError": "Error importing",
+    "exportError": "Error exporting",
+    "invalidFormat": "Invalid format"
+  },
+
+  "success": {
+    "saved": "Saved successfully!",
+    "deleted": "Deleted successfully!",
+    "imported": "Imported successfully!",
+    "exported": "Exported successfully!",
+    "updated": "Updated successfully!"
+  },
+
+  "badges": {
+    "income": "Income",
+    "expense": "Expense",
+    "transfer": "Transfer",
+    "paid": "Completed",
+    "pending": "Pending",
+    "bank": "Checking Account",
+    "cash": "Cash",
+    "card": "Credit Card"
+  },
+
+  "modals": {
+    "confirmation": {
+      "title": "Confirmation",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    }
+  }
+}
