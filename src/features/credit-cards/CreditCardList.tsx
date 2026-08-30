@@ -8,7 +8,7 @@ import { Badge, Button, Card } from '@/components/ui';
 import { db } from '@/core/database';
 import { useData } from '@/core/hooks';
 import { useI18n } from '@/core/i18n';
-import type { CreditCard as CreditCardType } from '@/types';
+import type { Account, CreditCard as CreditCardType } from '@/types';
 import { CreditCard, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { CreditCardModal } from './CreditCardModal';
@@ -16,6 +16,7 @@ import { CreditCardModal } from './CreditCardModal';
 export const CreditCardList = () => {
   const { t, formatCurrency } = useI18n();
   const cards = useData<CreditCardType>('creditCards');
+  const accounts = useData<Account>('accounts');
   const [filter, setFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCard, setEditingCard] = useState<CreditCardType | null>(null);
@@ -49,6 +50,8 @@ export const CreditCardList = () => {
   const filteredCards = cards.filter((card) =>
     card.name.toLowerCase().includes(filter.toLowerCase())
   );
+  const getAccountName = (accountId: number | null) =>
+    accounts.find((account) => account.id === accountId)?.name;
 
   return (
     <div className="space-y-4">
@@ -76,6 +79,8 @@ export const CreditCardList = () => {
           >
             <div className="absolute top-4 right-4 flex gap-2 z-10">
               <button
+                type="button"
+                aria-label={t('common.edit')}
                 onClick={(e) => {
                   e.stopPropagation();
                   openEdit(card);
@@ -85,6 +90,8 @@ export const CreditCardList = () => {
                 <Pencil className="w-4 h-4" />
               </button>
               <button
+                type="button"
+                aria-label={t('common.delete')}
                 onClick={(e) => {
                   e.stopPropagation();
                   if (card.id) initiateDelete(card.id);
@@ -106,6 +113,12 @@ export const CreditCardList = () => {
             </div>
 
             <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500 dark:text-slate-400">{t('creditCards.account')}</span>
+                <span className={`font-medium ${card.accountId ? 'text-slate-700 dark:text-slate-300' : 'text-amber-600 dark:text-amber-400'}`}>
+                  {getAccountName(card.accountId) ?? t('creditCards.unlinkedAccount')}
+                </span>
+              </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500 dark:text-slate-400">{t('creditCards.limit')}</span>
                 <span className="font-bold text-slate-900 dark:text-white">
@@ -137,11 +150,13 @@ export const CreditCardList = () => {
         )}
       </div>
 
-      <CreditCardModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        cardToEdit={editingCard}
-      />
+      {isModalOpen && (
+        <CreditCardModal
+          isOpen
+          onClose={() => setIsModalOpen(false)}
+          cardToEdit={editingCard}
+        />
+      )}
 
       <ConfirmationModal
         isOpen={!!deleteId}

@@ -6,7 +6,7 @@
  * - single-month: Mês específico
  */
 
-import { ConfirmationModal, DeleteInstallmentModal } from '@/components/shared';
+import { ConfirmationModal, DeleteInstallmentModal, EditInstallmentModal } from '@/components/shared';
 import { Badge, Button, Card } from '@/components/ui';
 import { db } from '@/core/database';
 import { useData } from '@/core/hooks';
@@ -31,9 +31,11 @@ import {
     XCircle,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { TransactionModal } from './TransactionModal';
 
 type ViewMode = 'list' | 'monthly' | 'single-month';
+type MenuPosition = { top: number; left: number };
 
 export const TransactionList = () => {
   const { t, formatCurrency } = useI18n();
@@ -55,7 +57,12 @@ export const TransactionList = () => {
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
   const [showInstallmentModal, setShowInstallmentModal] = useState(false);
   const [installmentToDelete, setInstallmentToDelete] = useState<Transaction | null>(null);
+  const [showInstallmentEditModal, setShowInstallmentEditModal] = useState(false);
+  const [installmentToEdit, setInstallmentToEdit] = useState<Transaction | null>(null);
+  const [installmentEditScope, setInstallmentEditScope] = useState<'single' | 'all'>('single');
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [menuPosition, setMenuPosition] = useState<MenuPosition | null>(null);
+  const [transactionForStatusChange, setTransactionForStatusChange] = useState<Transaction | null>(null);
 
   // Filtros e Busca
   const filteredTransactions = useMemo(() => {
@@ -99,7 +106,14 @@ export const TransactionList = () => {
   }, [transactions, selectedMonth]);
 
   const handleEdit = (transaction: Transaction) => {
+    if (transaction.groupId) {
+      setInstallmentToEdit(transaction);
+      setShowInstallmentEditModal(true);
+      setOpenMenuId(null);
+      return;
+    }
     setTransactionToEdit(transaction);
+    setInstallmentEditScope('single');
     setShowModal(true);
     setOpenMenuId(null);
   };
@@ -119,21 +133,24 @@ export const TransactionList = () => {
     if (!transactionToDelete?.id) return;
 
     try {
-      // Reverter saldo se necessário
-      if (transactionToDelete.status === 'paid' && !transactionToDelete.isCreditCard) {
-        const account = await db.get<Account>('accounts', transactionToDelete.accountId!);
-        if (account) {
-          let newBalance = account.balance;
-          if (transactionToDelete.type === 'expense') {
-            newBalance += transactionToDelete.amount;
-          } else if (transactionToDelete.type === 'income') {
-            newBalance -= transactionToDelete.amount;
+      if (transactionToDelete.isCreditCard) {
+        await db.deleteCreditCardTransactions([transactionToDelete.id]);
+      } else {
+        // Reverter saldo se necessário
+        if (transactionToDelete.status === 'paid') {
+          const account = await db.get<Account>('accounts', transactionToDelete.accountId!);
+          if (account) {
+            let newBalance = account.balance;
+            if (transactionToDelete.type === 'expense') {
+              newBalance += transactionToDelete.amount;
+            } else if (transactionToDelete.type === 'income') {
+              newBalance -= transactionToDelete.amount;
+            }
+            await db.update('accounts', transactionToDelete.accountId!, { balance: newBalance });
           }
-          await db.update('accounts', transactionToDelete.accountId!, { balance: newBalance });
         }
+        await db.delete('transactions', transactionToDelete.id);
       }
-
-      await db.delete('transactions', transactionToDelete.id);
     } catch (err) {
       console.error('Erro ao excluir transação:', err);
     }
@@ -148,23 +165,14 @@ export const TransactionList = () => {
       const allTransactions = await db.getAll<Transaction>('transactions');
       const group = allTransactions.filter((t) => t.groupId === installmentToDelete.groupId);
 
-      switch (mode) {
-        case 'single':
-          await db.delete('transactions', installmentToDelete.id!);
-          break;
-        case 'remaining':
-          for (const t of group.filter(
-            (t) => t.installmentCurrent! >= installmentToDelete.installmentCurrent!
-          )) {
-            await db.delete('transactions', t.id!);
-          }
-          break;
-        case 'all':
-          for (const t of group) {
-            await db.delete('transactions', t.id!);
-          }
-          break;
-      }
+      const selectedTransactions = mode === 'single'
+        ? [installmentToDelete]
+        : mode === 'remaining'
+          ? group.filter((t) => t.installmentCurrent! >= installmentToDelete.installmentCurrent!)
+          : group;
+      await db.deleteCreditCardTransactions(
+        selectedTransactions.flatMap((transaction) => transaction.id === undefined ? [] : [transaction.id]),
+      );
     } catch (err) {
       console.error('Erro ao excluir parcelas:', err);
     }
@@ -173,32 +181,71 @@ export const TransactionList = () => {
     setInstallmentToDelete(null);
   };
 
-  const toggleStatus = async (transaction: Transaction) => {
+  const requestStatusChange = (transaction: Transaction) => {
+    setTransactionForStatusChange(transaction);
+    setOpenMenuId(null);
+  };
+
+  const confirmInstallmentEdit = (scope: 'single' | 'all') => {
+    if (!installmentToEdit) return;
+    setTransactionToEdit(installmentToEdit);
+    setInstallmentEditScope(scope);
+    setInstallmentToEdit(null);
+    setShowInstallmentEditModal(false);
+    setShowModal(true);
+  };
+
+  const confirmStatusChange = async () => {
+    if (!transactionForStatusChange) return;
+    const transaction = transactionForStatusChange;
     const newStatus = transaction.status === 'paid' ? 'pending' : 'paid';
+    const card = transaction.isCreditCard
+      ? creditCards.find((item) => item.id === transaction.creditCardId)
+      : undefined;
+    if (transaction.isCreditCard && newStatus === 'paid' && !card?.accountId) {
+      setTransactionForStatusChange(null);
+      return;
+    }
     try {
-      await db.update('transactions', transaction.id!, { status: newStatus });
+      if (transaction.isCreditCard) {
+        await db.changeCreditCardTransactionStatus(
+          transaction.id!,
+          newStatus,
+          newStatus === 'paid' ? card?.accountId ?? undefined : undefined,
+        );
+      } else {
+        await db.update('transactions', transaction.id!, { status: newStatus });
 
-      // Atualizar saldo se não for cartão
-      if (!transaction.isCreditCard && transaction.accountId) {
-        const account = await db.get<Account>('accounts', transaction.accountId);
-        if (account) {
-          let delta = transaction.amount;
-          if (transaction.type === 'expense') delta = -delta;
-
-          // Se mudou para paid, adiciona; se mudou para pending, reverte
-          const adjust = newStatus === 'paid' ? delta : -delta;
-          await db.update('accounts', transaction.accountId, {
-            balance: account.balance + adjust,
-          });
+        // Atualizar saldos para transações comuns. Transferências afetam origem e destino.
+        if (transaction.accountId !== null && transaction.accountId !== undefined) {
+          const account = await db.get<Account>('accounts', transaction.accountId);
+          if (account && transaction.type === 'transfer' && transaction.toAccountId !== null && transaction.toAccountId !== undefined) {
+            const toAccount = await db.get<Account>('accounts', transaction.toAccountId);
+            if (toAccount) {
+              const direction = newStatus === 'paid' ? 1 : -1;
+              await db.update('accounts', transaction.accountId, {
+                balance: account.balance - transaction.amount * direction,
+              });
+              await db.update('accounts', transaction.toAccountId, {
+                balance: toAccount.balance + transaction.amount * direction,
+              });
+            }
+          } else if (account) {
+            const delta = transaction.type === 'expense' ? -transaction.amount : transaction.amount;
+            const adjust = newStatus === 'paid' ? delta : -delta;
+            await db.update('accounts', transaction.accountId, {
+              balance: account.balance + adjust,
+            });
+          }
         }
       }
     } catch (err) {
       console.error('Erro ao atualizar status:', err);
     }
-    setOpenMenuId(null);
+    setTransactionForStatusChange(null);
   };
 
-  const getAccountName = (id: number | null) => {
+  const getAccountName = (id: number | null | undefined) => {
     if (!id) return '-';
     return accounts.find((a) => a.id === id)?.name || '-';
   };
@@ -213,6 +260,30 @@ export const TransactionList = () => {
     return creditCards.find((c) => c.id === id)?.name || '-';
   };
 
+  const getStatusChangeMessage = (transaction: Transaction) => {
+    const isMarkingPaid = transaction.status === 'pending';
+    const amount = formatCurrency(transaction.amount);
+
+    if (transaction.isCreditCard) {
+      const card = creditCards.find((item) => item.id === transaction.creditCardId);
+      if (isMarkingPaid && !card?.accountId) return t('transactions.statusChange.creditCardMissingAccount');
+      const account = isMarkingPaid
+        ? getAccountName(card?.accountId)
+        : getAccountName(transaction.accountId);
+      return t(isMarkingPaid ? 'transactions.statusChange.payCreditCard' : 'transactions.statusChange.revertCreditCard', { account, amount });
+    }
+
+    const account = getAccountName(transaction.accountId);
+    if (transaction.type === 'expense') {
+      return t(isMarkingPaid ? 'transactions.statusChange.payExpense' : 'transactions.statusChange.revertExpense', { account, amount });
+    }
+    if (transaction.type === 'income') {
+      return t(isMarkingPaid ? 'transactions.statusChange.payIncome' : 'transactions.statusChange.revertIncome', { account, amount });
+    }
+    const destination = getAccountName(transaction.toAccountId);
+    return t(isMarkingPaid ? 'transactions.statusChange.payTransfer' : 'transactions.statusChange.revertTransfer', { source: account, destination, amount });
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'income':
@@ -224,6 +295,29 @@ export const TransactionList = () => {
       default:
         return null;
     }
+  };
+
+  const toggleActionsMenu = (transactionId: number, button: HTMLButtonElement) => {
+    if (openMenuId === transactionId) {
+      setOpenMenuId(null);
+      setMenuPosition(null);
+      return;
+    }
+
+    const buttonRect = button.getBoundingClientRect();
+    const menuWidth = 192;
+    const estimatedMenuHeight = 132;
+    const viewportPadding = 8;
+    const left = Math.min(
+      Math.max(viewportPadding, buttonRect.right - menuWidth),
+      window.innerWidth - menuWidth - viewportPadding
+    );
+    const top = buttonRect.bottom + estimatedMenuHeight + viewportPadding <= window.innerHeight
+      ? buttonRect.bottom + 4
+      : Math.max(viewportPadding, buttonRect.top - estimatedMenuHeight - 4);
+
+    setMenuPosition({ top, left });
+    setOpenMenuId(transactionId);
   };
 
   const navigateMonth = (direction: 'prev' | 'next') => {
@@ -295,20 +389,33 @@ export const TransactionList = () => {
       </td>
       <td className="py-3 px-4 text-right relative">
         <button
-          onClick={() => setOpenMenuId(openMenuId === transaction.id ? null : transaction.id!)}
+          type="button"
+          aria-label={t('common.actions')}
+          aria-haspopup="menu"
+          aria-expanded={openMenuId === transaction.id}
+          onClick={(event) => toggleActionsMenu(transaction.id!, event.currentTarget)}
           className="p-1 rounded-md hover:bg-slate-200 dark:hover:bg-slate-600"
         >
           <MoreVertical className="w-4 h-4 text-slate-500 dark:text-slate-400" />
         </button>
-        {openMenuId === transaction.id && (
+        {openMenuId === transaction.id && menuPosition && createPortal(
           <>
             <div
-              className="fixed inset-0 z-10"
-              onClick={() => setOpenMenuId(null)}
+              className="fixed inset-0 z-40"
+              onClick={() => {
+                setOpenMenuId(null);
+                setMenuPosition(null);
+              }}
             />
-            <div className="absolute right-0 top-full mt-1 z-20 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 py-1 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div
+              role="menu"
+              style={{ top: menuPosition.top, left: menuPosition.left }}
+              className="fixed z-50 w-48 rounded-lg border border-slate-200 bg-white py-1 shadow-xl animate-in fade-in slide-in-from-top-2 duration-200 dark:border-slate-700 dark:bg-slate-800"
+            >
               <button
-                onClick={() => toggleStatus(transaction)}
+                type="button"
+                role="menuitem"
+                onClick={() => requestStatusChange(transaction)}
                 className="w-full px-4 py-2 text-left text-sm flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
               >
                 {transaction.status === 'paid' ? (
@@ -324,6 +431,8 @@ export const TransactionList = () => {
                 )}
               </button>
               <button
+                type="button"
+                role="menuitem"
                 onClick={() => handleEdit(transaction)}
                 className="w-full px-4 py-2 text-left text-sm flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
               >
@@ -331,6 +440,8 @@ export const TransactionList = () => {
                 {t('common.edit')}
               </button>
               <button
+                type="button"
+                role="menuitem"
                 onClick={() => handleDelete(transaction)}
                 className="w-full px-4 py-2 text-left text-sm flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-700 text-rose-600"
               >
@@ -338,7 +449,8 @@ export const TransactionList = () => {
                 {t('common.delete')}
               </button>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </td>
     </tr>
@@ -488,6 +600,15 @@ export const TransactionList = () => {
                       {monthTransactions.length} {t('transactions.transactionsCount')}
                     </span>
                   </button>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <tbody>
+                        {[...monthTransactions]
+                          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                          .map(renderTransactionRow)}
+                      </tbody>
+                    </table>
+                  </div>
                   <div className="flex gap-4 text-sm">
                     <span className="text-emerald-600">
                       +
@@ -558,6 +679,7 @@ export const TransactionList = () => {
           setTransactionToEdit(null);
         }}
         transactionToEdit={transactionToEdit}
+        installmentEditScope={installmentEditScope}
       />
 
       <ConfirmationModal
@@ -568,10 +690,32 @@ export const TransactionList = () => {
         message={t('transactions.deleteModal.message')}
       />
 
+      <ConfirmationModal
+        isOpen={Boolean(transactionForStatusChange)}
+        onClose={() => setTransactionForStatusChange(null)}
+        onConfirm={confirmStatusChange}
+        title={t(`transactions.statusChange.title.${transactionForStatusChange?.status === 'pending' ? 'paid' : 'pending'}`)}
+        message={transactionForStatusChange ? getStatusChangeMessage(transactionForStatusChange) : ''}
+        confirmText={transactionForStatusChange?.isCreditCard && transactionForStatusChange.status === 'pending' && !creditCards.find((card) => card.id === transactionForStatusChange.creditCardId)?.accountId
+          ? t('common.close')
+          : t(`transactions.actions.${transactionForStatusChange?.status === 'pending' ? 'markPaid' : 'markPending'}`)}
+        isDanger={false}
+        showCancel={!(transactionForStatusChange?.isCreditCard && transactionForStatusChange.status === 'pending' && !creditCards.find((card) => card.id === transactionForStatusChange.creditCardId)?.accountId)}
+      />
+
       <DeleteInstallmentModal
         isOpen={showInstallmentModal}
         onClose={() => setShowInstallmentModal(false)}
         onConfirm={handleInstallmentDelete}
+      />
+
+      <EditInstallmentModal
+        isOpen={showInstallmentEditModal}
+        onClose={() => {
+          setShowInstallmentEditModal(false);
+          setInstallmentToEdit(null);
+        }}
+        onConfirm={confirmInstallmentEdit}
       />
     </div>
   );

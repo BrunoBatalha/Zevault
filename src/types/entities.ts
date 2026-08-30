@@ -4,11 +4,6 @@
  */
 
 /**
- * Tipos de conta disponíveis no sistema
- */
-export type AccountType = 'bank' | 'cash' | 'card';
-
-/**
  * Tipos de transação
  */
 export type TransactionType = 'expense' | 'income' | 'transfer';
@@ -24,7 +19,6 @@ export type CategoryType = 'income' | 'expense';
 export interface Account {
   id?: number;
   name: string;
-  type: AccountType;
   balance: number;
   createdAt?: string;
   updatedAt?: string;
@@ -94,7 +88,7 @@ export interface CreditCard {
   limit: number;
   closingDay: number; // Dia do fechamento (1-31)
   dueDay: number; // Dia do vencimento (1-31)
-  accountId?: number; // Conta vinculada para débito
+  accountId: number | null; // Conta vinculada para pagamento; null apenas para dados legados
   createdAt?: string;
   updatedAt?: string;
 }

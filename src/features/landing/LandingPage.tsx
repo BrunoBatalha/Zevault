@@ -172,10 +172,10 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
                   <Database className="w-7 h-7" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
-                  {t('landing.features.localStorage.title')}
+                  {t('landing.features.storage.title')}
                 </h3>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {t('landing.features.localStorage.description')}
+                  {t('landing.features.storage.description')}
                 </p>
               </article>
 
@@ -216,7 +216,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
                   {t('landing.comparison.title')}
                 </h2>
                 <p className="text-slate-400 text-xl mb-10 leading-relaxed">
-                  {t('landing.comparison.subtitle')}
+                  {t('landing.comparison.description')}
                 </p>
                 <ul className="space-y-6">
                   <li className="flex items-center gap-4">
@@ -235,7 +235,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
                     <div className="p-1 rounded-full bg-emerald-500/10 text-emerald-400">
                       <Check className="w-6 h-6" />
                     </div>
-                    <span className="text-lg">{t('landing.comparison.gdprCompliant')}</span>
+                    <span className="text-lg">{t('landing.comparison.compliant')}</span>
                   </li>
                 </ul>
               </div>
@@ -250,25 +250,25 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
                 </div>
                 <div className="space-y-4 font-mono text-sm">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Database Location:</span>
-                    <span className="text-emerald-400">Localhost (IndexedDB)</span>
+                    <span className="text-slate-400">{t('landing.comparison.terminal.dbLocation')}</span>
+                    <span className="text-emerald-400">{t('landing.comparison.terminal.dbLocationValue')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">External Access:</span>
-                    <span className="text-rose-400">Blocked</span>
+                    <span className="text-slate-400">{t('landing.comparison.terminal.externalAccess')}</span>
+                    <span className="text-amber-400">{t('landing.comparison.terminal.externalAccessValue')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Encryption:</span>
-                    <span className="text-emerald-400">Client-Side Enabled</span>
+                    <span className="text-slate-400">{t('landing.comparison.terminal.encryption')}</span>
+                    <span className="text-amber-400">{t('landing.comparison.terminal.encryptionValue')}</span>
                   </div>
                   <div className="p-4 bg-slate-900/50 rounded-xl border border-slate-800 mt-6 text-xs text-slate-300 leading-loose">
-                    {`> System initialized.`}
+                    {t('landing.comparison.terminal.systemInit')}
                     <br />
-                    {`> Connecting to local storage... OK`}
+                    {t('landing.comparison.terminal.connecting')}
                     <br />
-                    {`> Syncing disabled by default for security.`}
+                    {t('landing.comparison.terminal.syncDisabled')}
                     <br />
-                    {`> Ready.`}
+                    {t('landing.comparison.terminal.ready')}
                   </div>
                 </div>
               </div>
@@ -284,7 +284,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
               {t('landing.cta.title')}
             </h2>
             <p className="text-indigo-100 mb-10 max-w-xl mx-auto text-lg">
-              {t('landing.cta.subtitle')}
+              {t('landing.cta.description')}
             </p>
             <button
               onClick={onGetStarted}
@@ -298,7 +298,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
 
       <footer className="bg-slate-50 border-t border-slate-200 py-12">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-slate-500 text-sm">{t('landing.footer.copyright')}</p>
+          <p className="text-slate-500 text-sm">{t('landing.footer.copyright', { year: new Date().getFullYear() })}</p>
           <div className="flex gap-6">
             <a href="#" className="text-slate-400 hover:text-slate-600 transition-colors">
               <Globe className="w-5 h-5" />

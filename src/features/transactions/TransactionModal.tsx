@@ -9,14 +9,18 @@ import { db } from '@/core/database';
 import { useData } from '@/core/hooks';
 import { useI18n } from '@/core/i18n';
 import type { Account, Category, CostCenter, CreditCard, Transaction } from '@/types';
-import { X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Info, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { buildCreditCardPurchaseInstallments, splitAmountInCents, sumAmountsInCents } from './credit-card-purchase';
 
 interface TransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
   transactionToEdit?: Transaction | null;
+  installmentEditScope?: 'single' | 'all';
 }
+
+const installmentDescriptionSuffix = /\s+\(Parc\. \d+\/\d+\)$/;
 
 interface FormData {
   date: string;
@@ -37,12 +41,14 @@ export const TransactionModal = ({
   isOpen,
   onClose,
   transactionToEdit = null,
+  installmentEditScope = 'single',
 }: TransactionModalProps) => {
-  const { t } = useI18n();
+  const { t, formatCurrency } = useI18n();
   const accounts = useData<Account>('accounts');
   const categories = useData<Category>('categories');
   const costCenters = useData<CostCenter>('costCenters');
   const creditCards = useData<CreditCard>('creditCards');
+  const transactions = useData<Transaction>('transactions');
 
   const [formData, setFormData] = useState<FormData>({
     date: new Date().toISOString().split('T')[0],
@@ -58,13 +64,26 @@ export const TransactionModal = ({
     creditCardId: '',
     installments: 1,
   });
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocusedElement = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     if (transactionToEdit) {
+      const isEditingFullPurchase = transactionToEdit.isCreditCard && installmentEditScope === 'all';
+      const purchaseTransactions = isEditingFullPurchase && transactionToEdit.groupId
+        ? transactions.filter((transaction) => transaction.groupId === transactionToEdit.groupId)
+        : [];
       setFormData({
-        date: transactionToEdit.date,
-        amount: String(transactionToEdit.amount),
-        description: transactionToEdit.description,
+        date: isEditingFullPurchase ? transactionToEdit.purchaseDate ?? transactionToEdit.date : transactionToEdit.date,
+        amount: String(isEditingFullPurchase
+          ? sumAmountsInCents(purchaseTransactions.map((transaction) => transaction.amount))
+          : transactionToEdit.amount),
+        description: isEditingFullPurchase
+          ? transactionToEdit.description.replace(installmentDescriptionSuffix, '')
+          : transactionToEdit.description,
         type: transactionToEdit.type,
         accountId: String(transactionToEdit.accountId || ''),
         toAccountId: String(transactionToEdit.toAccountId || ''),
@@ -92,7 +111,97 @@ export const TransactionModal = ({
         installments: 1,
       });
     }
-  }, [transactionToEdit, isOpen, accounts, creditCards]);
+  }, [transactionToEdit, installmentEditScope, isOpen, accounts, creditCards, transactions]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    previouslyFocusedElement.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const focusDialog = window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+
+    return () => {
+      window.cancelAnimationFrame(focusDialog);
+      previouslyFocusedElement.current?.focus();
+    };
+  }, [isOpen]);
+
+  const handleDialogKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onClose();
+      return;
+    }
+
+    if (event.key !== 'Tab' || !dialogRef.current) return;
+
+    const focusableElements = Array.from(
+      dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements.at(-1);
+
+    if (!firstElement || !lastElement) return;
+    if (event.shiftKey && document.activeElement === firstElement) {
+      event.preventDefault();
+      lastElement.focus();
+    } else if (!event.shiftKey && document.activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  };
+
+  const amount = Number(formData.amount) || 0;
+  const selectedAccount = accounts.find((account) => account.id === Number(formData.accountId));
+  const selectedDestinationAccount = accounts.find((account) => account.id === Number(formData.toAccountId));
+  const selectedCard = creditCards.find((card) => card.id === Number(formData.creditCardId));
+  const isEditingCreditCardTransaction = Boolean(transactionToEdit?.isCreditCard);
+  const isEditingAllInstallments = isEditingCreditCardTransaction && installmentEditScope === 'all';
+  const selectedInstallmentAmounts = splitAmountInCents(amount, formData.installments);
+  const primaryInstallmentAmount = selectedInstallmentAmounts[0] ?? 0;
+  const lastInstallmentAmount = selectedInstallmentAmounts.at(-1) ?? 0;
+  const hasLastInstallmentAdjustment = formData.installments > 1 && primaryInstallmentAmount !== lastInstallmentAmount;
+  const installmentOptions = Array.from({ length: 12 }, (_, index) => {
+    const installments = index + 1;
+    const amounts = splitAmountInCents(amount, installments);
+    const amountLabel = formatCurrency(amounts[0] ?? 0);
+
+    return {
+      installments,
+      label: t('transactions.modal.installmentOption', {
+        count: installments,
+        label: installments > 1 ? t('transactions.modal.noInterest') : t('transactions.modal.inFull'),
+        amount: amountLabel,
+      }),
+    };
+  });
+
+  const impactPreview = (() => {
+    if (transactionToEdit) {
+      return t('transactions.impact.edit');
+    }
+    if (!amount) return t('transactions.impact.empty');
+    if (formData.type === 'expense' && formData.paymentMethod === 'credit') {
+      return t('transactions.impact.credit', {
+        amount: formatCurrency(amount),
+        card: selectedCard?.name ?? t('transactions.modal.card'),
+        installments: formData.installments,
+      });
+    }
+    if (formData.status === 'pending') return t('transactions.impact.pending');
+    if (!selectedAccount) return t('transactions.impact.selectAccount');
+    if (formData.type === 'expense') return t('transactions.impact.expense', { account: selectedAccount.name, amount: formatCurrency(amount) });
+    if (formData.type === 'income') return t('transactions.impact.income', { account: selectedAccount.name, amount: formatCurrency(amount) });
+    if (!selectedDestinationAccount) return t('transactions.impact.selectDestination');
+    return t('transactions.impact.transfer', {
+      amount: formatCurrency(amount),
+      source: selectedAccount.name,
+      destination: selectedDestinationAccount.name,
+    });
+  })();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,56 +222,44 @@ export const TransactionModal = ({
         const card = creditCards.find((c) => c.id === Number(formData.creditCardId));
         if (!card) return;
 
-        const installments = formData.installments;
-        const installmentAmount = amount / installments;
-        const purchaseDate = new Date(formData.date);
-
-        // Determinar a data da primeira fatura
-        let baseMonth = purchaseDate.getMonth();
-        let baseYear = purchaseDate.getFullYear();
-
-        // Se comprou depois ou no dia do fechamento, vai para o próximo mês
-        if (purchaseDate.getDate() >= card.closingDay) {
-          baseMonth++;
-        }
-
-        // Ajuste do ano se passar de dezembro
-        if (baseMonth > 11) {
-          baseMonth = 0;
-          baseYear++;
-        }
-
-        let dueMonth = baseMonth;
-        const dueYear = baseYear;
-
-        if (card.dueDay < card.closingDay) {
-          dueMonth++;
-        }
-
         const groupId = crypto.randomUUID();
-
-        for (let i = 0; i < installments; i++) {
-          const finalDueMonth = dueMonth + i;
-          const finalDueDate = new Date(dueYear, finalDueMonth, card.dueDay);
-
-          const transData = {
-            amount: installmentAmount,
-            accountId: null,
-            creditCardId: Number(formData.creditCardId),
-            date: finalDueDate.toISOString().split('T')[0],
-            description: `${formData.description} (Parc. ${i + 1}/${installments})`,
-            status: 'pending' as const,
-            type: 'expense' as const,
-            isCreditCard: true,
-            installmentCurrent: i + 1,
-            installmentTotal: installments,
-            groupId: groupId,
+        const installments = buildCreditCardPurchaseInstallments(card, {
+          totalAmount: amount,
+          purchaseDate: formData.date,
+          description: formData.description,
+          installments: formData.installments,
+          creditCardId: Number(formData.creditCardId),
+          groupId,
+          categoryId: formData.categoryId ? Number(formData.categoryId) : null,
+          costCenterId: formData.costCenterId ? Number(formData.costCenterId) : null,
+        });
+        await db.bulkAdd('transactions', installments);
+      } else if (isEditingCreditCardTransaction && transactionToEdit?.id) {
+        if (isEditingAllInstallments && transactionToEdit.groupId) {
+          const card = creditCards.find((item) => item.id === Number(formData.creditCardId));
+          if (!card) return;
+          const installments = buildCreditCardPurchaseInstallments(card, {
+            totalAmount: amount,
             purchaseDate: formData.date,
+            description: formData.description,
+            installments: formData.installments,
+            creditCardId: Number(formData.creditCardId),
+            groupId: transactionToEdit.groupId,
             categoryId: formData.categoryId ? Number(formData.categoryId) : null,
             costCenterId: formData.costCenterId ? Number(formData.costCenterId) : null,
-          };
-
-          await db.add('transactions', transData);
+          });
+          await db.replaceCreditCardPurchase(transactionToEdit.groupId, installments);
+        } else {
+          const card = creditCards.find((item) => item.id === Number(formData.creditCardId));
+          if (!card?.accountId) return;
+          await db.updateCreditCardTransaction(transactionToEdit.id, {
+            amount,
+            creditCardId: Number(formData.creditCardId),
+            categoryId: formData.categoryId ? Number(formData.categoryId) : null,
+            costCenterId: formData.costCenterId ? Number(formData.costCenterId) : null,
+            date: formData.date,
+            description: formData.description,
+          }, card.accountId);
         }
       } else {
         // Lógica Original (Débito / Receita / Transferência)
@@ -221,22 +318,25 @@ export const TransactionModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm sm:items-center sm:p-4">
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="transaction-modal-title" onKeyDown={handleDialogKeyDown} className="flex max-h-[calc(100vh-4rem)] w-full max-w-2xl flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl dark:bg-slate-800 sm:max-h-[90vh] sm:rounded-xl">
         <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800">
-          <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+          <h3 id="transaction-modal-title" className="text-lg font-bold text-slate-800 dark:text-white">
             {transactionToEdit ? t('transactions.modal.editTitle') : t('transactions.modal.newTitle')}
           </h3>
           <button
+            ref={closeButtonRef}
+            type="button"
             onClick={onClose}
-            className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+            aria-label={t('common.close')}
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus-visible:outline-2 focus-visible:outline-indigo-600 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto p-4 sm:p-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 {t('common.type')}
@@ -260,7 +360,7 @@ export const TransactionModal = ({
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                {t('common.date')}
+                {isEditingAllInstallments ? t('transactions.modal.purchaseDate') : t('common.date')}
               </label>
               <input
                 type="date"
@@ -274,7 +374,7 @@ export const TransactionModal = ({
 
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              {t('transactions.modal.amount')}
+              {isEditingAllInstallments ? t('transactions.modal.totalAmount') : t('transactions.modal.amount')}
             </label>
             <input
               type="number"
@@ -301,9 +401,17 @@ export const TransactionModal = ({
             />
           </div>
 
+          <div aria-live="polite" className="flex gap-3 rounded-xl border border-indigo-100 bg-indigo-50 p-4 text-sm leading-6 text-indigo-950 dark:border-indigo-900/60 dark:bg-indigo-950/30 dark:text-indigo-100">
+            <Info aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-indigo-700 dark:text-indigo-300" />
+            <div>
+              <p className="font-semibold">{t('transactions.impact.title')}</p>
+              <p>{impactPreview}</p>
+            </div>
+          </div>
+
           {/* Seletor de Método de Pagamento (Apenas para Despesas) */}
           {formData.type === 'expense' && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   {t('transactions.modal.method')}
@@ -369,22 +477,32 @@ export const TransactionModal = ({
                 {t('transactions.modal.installments')}
               </label>
               <select
+                aria-describedby={hasLastInstallmentAdjustment ? 'last-installment-notice' : undefined}
                 className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
                 value={formData.installments}
                 onChange={(e) => setFormData({ ...formData, installments: parseInt(e.target.value) })}
               >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => (
-                  <option key={n} value={n}>
-                    {n}x {n > 1 ? t('transactions.modal.noInterest') : t('transactions.modal.inFull')}
+                {installmentOptions.map(({ installments, label }) => (
+                  <option key={installments} value={installments}>
+                    {label}
                   </option>
                 ))}
               </select>
+              {hasLastInstallmentAdjustment && (
+                <p id="last-installment-notice" className="mt-2 flex items-start gap-1.5 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                  <Info aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-indigo-500 dark:text-indigo-400" />
+                  {t('transactions.modal.lastInstallmentNotice', {
+                    amount: formatCurrency(lastInstallmentAmount),
+                    total: formatCurrency(amount),
+                  })}
+                </p>
+              )}
             </div>
           )}
 
           {/* Campos para Transferência e Outros (quando não é cartão) */}
           {formData.type !== 'expense' && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   {t('transactions.modal.sourceAccount')}
@@ -449,7 +567,7 @@ export const TransactionModal = ({
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 {t('transactions.modal.costCenter')}

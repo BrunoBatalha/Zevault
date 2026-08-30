@@ -8,7 +8,7 @@ import { Badge, Button, Card } from '@/components/ui';
 import { db } from '@/core/database';
 import { useData } from '@/core/hooks';
 import { useI18n } from '@/core/i18n';
-import type { Account } from '@/types';
+import type { Account, CreditCard } from '@/types';
 import { Landmark, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { AccountModal } from './AccountModal';
@@ -16,14 +16,21 @@ import { AccountModal } from './AccountModal';
 export const AccountList = () => {
   const { t, formatCurrency } = useI18n();
   const accounts = useData<Account>('accounts');
+  const creditCards = useData<CreditCard>('creditCards');
   const [filter, setFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
 
   // State for Custom Confirmation Modal
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [linkedAccountName, setLinkedAccountName] = useState<string | null>(null);
 
   const initiateDelete = (id: number) => {
+    const linkedCard = creditCards.find((card) => card.accountId === id);
+    if (linkedCard) {
+      setLinkedAccountName(linkedCard.name);
+      return;
+    }
     setDeleteId(id);
   };
 
@@ -50,8 +57,7 @@ export const AccountList = () => {
 
   const filteredAccounts = accounts.filter(
     (acc) =>
-      acc.name.toLowerCase().includes(filter.toLowerCase()) ||
-      acc.type.toLowerCase().includes(filter.toLowerCase())
+      acc.name.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
@@ -80,6 +86,8 @@ export const AccountList = () => {
           >
             <div className="absolute top-4 right-4 flex gap-2 z-10">
               <button
+                type="button"
+                aria-label={t('common.edit')}
                 onClick={(e) => {
                   e.stopPropagation();
                   openEdit(acc);
@@ -89,6 +97,8 @@ export const AccountList = () => {
                 <Pencil className="w-4 h-4" />
               </button>
               <button
+                type="button"
+                aria-label={t('common.delete')}
                 onClick={(e) => {
                   e.stopPropagation();
                   if (acc.id) initiateDelete(acc.id);
@@ -100,20 +110,12 @@ export const AccountList = () => {
             </div>
 
             <div className="flex items-center gap-4 mb-4">
-              <div
-                className={`p-3 rounded-lg ${
-                  acc.type === 'bank'
-                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-                    : acc.type === 'cash'
-                      ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
-                      : 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400'
-                }`}
-              >
+              <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
                 <Landmark className="w-6 h-6" />
               </div>
               <div>
                 <h4 className="font-bold text-slate-800 dark:text-white">{acc.name}</h4>
-                <Badge variant={acc.type}>{t(`accounts.types.${acc.type}`)}</Badge>
+                <Badge variant="bank">{t('accounts.badge')}</Badge>
               </div>
             </div>
 
@@ -140,11 +142,13 @@ export const AccountList = () => {
         )}
       </div>
 
-      <AccountModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        accountToEdit={editingAccount}
-      />
+      {isModalOpen && (
+        <AccountModal
+          isOpen
+          onClose={() => setIsModalOpen(false)}
+          accountToEdit={editingAccount}
+        />
+      )}
 
       <ConfirmationModal
         isOpen={!!deleteId}
@@ -152,6 +156,17 @@ export const AccountList = () => {
         onConfirm={confirmDelete}
         title={t('accounts.deleteTitle')}
         message={t('accounts.deleteMessage')}
+      />
+
+      <ConfirmationModal
+        isOpen={Boolean(linkedAccountName)}
+        onClose={() => setLinkedAccountName(null)}
+        onConfirm={() => setLinkedAccountName(null)}
+        title={t('accounts.linkedDeleteTitle')}
+        message={t('accounts.linkedDeleteMessage', { card: linkedAccountName })}
+        confirmText={t('common.close')}
+        isDanger={false}
+        showCancel={false}
       />
     </div>
   );

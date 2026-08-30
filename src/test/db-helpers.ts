@@ -4,7 +4,6 @@ import type { Account, Transaction, Category, CreditCard } from '@/types'
 export async function seedAccount(overrides?: Partial<Account>) {
   return db.add<Account>('accounts', {
     name: 'Conta Teste',
-    type: 'bank',
     balance: 1000,
     ...overrides,
   } as Omit<Account, 'id'>)
@@ -36,6 +35,7 @@ export async function seedCreditCard(overrides?: Partial<CreditCard>) {
     limit: 5000,
     closingDay: 10,
     dueDay: 20,
+    accountId: 1,
     ...overrides,
   } as Omit<CreditCard, 'id'>)
 }

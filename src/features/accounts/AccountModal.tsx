@@ -8,7 +8,7 @@ import { db } from '@/core/database';
 import { useI18n } from '@/core/i18n';
 import type { Account } from '@/types';
 import { X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -18,15 +18,10 @@ interface AccountModalProps {
 
 export const AccountModal = ({ isOpen, onClose, accountToEdit = null }: AccountModalProps) => {
   const { t } = useI18n();
-  const [formData, setFormData] = useState({ name: '', type: 'bank' as Account['type'], balance: 0 });
-
-  useEffect(() => {
-    if (accountToEdit) {
-      setFormData(accountToEdit);
-    } else {
-      setFormData({ name: '', type: 'bank', balance: 0 });
-    }
-  }, [accountToEdit, isOpen]);
+  const [formData, setFormData] = useState(() => ({
+    name: accountToEdit?.name ?? '',
+    balance: accountToEdit?.balance ?? 0,
+  }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +54,8 @@ export const AccountModal = ({ isOpen, onClose, accountToEdit = null }: AccountM
             {accountToEdit ? t('accounts.modal.editTitle') : t('accounts.modal.newTitle')}
           </h3>
           <button
+            type="button"
+            aria-label={t('common.close')}
             onClick={onClose}
             className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
           >
@@ -78,27 +75,6 @@ export const AccountModal = ({ isOpen, onClose, accountToEdit = null }: AccountM
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              {t('accounts.modal.type')}
-            </label>
-            <div className="flex bg-slate-100 dark:bg-slate-700 p-1 rounded-md">
-              {(['bank', 'cash', 'card'] as const).map((tp) => (
-                <button
-                  type="button"
-                  key={tp}
-                  onClick={() => setFormData({ ...formData, type: tp })}
-                  className={`flex-1 text-sm py-1.5 rounded-md capitalize font-medium transition-all ${
-                    formData.type === tp
-                      ? 'bg-white dark:bg-slate-600 shadow text-indigo-600 dark:text-indigo-400'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-                  }`}
-                >
-                  {t(`accounts.types.${tp}`)}
-                </button>
-              ))}
-            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">

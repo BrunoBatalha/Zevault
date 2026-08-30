@@ -6,7 +6,7 @@
  * Configurações do IndexedDB
  */
 export const DB_NAME = 'FinancierProDB_Native';
-export const DB_VERSION = 2;
+export const DB_VERSION = 3;
 
 /**
  * Nomes dos stores do IndexedDB
@@ -63,11 +63,6 @@ export const KEYBOARD_SHORTCUTS = {
  * Labels de tipos
  */
 export const TYPE_LABELS = {
-  ACCOUNT_TYPES: {
-    bank: 'Banco',
-    cash: 'Dinheiro',
-    card: 'Cartão',
-  },
   TRANSACTION_TYPES: {
     expense: 'Despesa',
     income: 'Receita',

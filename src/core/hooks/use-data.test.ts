@@ -10,7 +10,7 @@ describe('useData', () => {
   })
 
   it('retorna dados existentes do store', async () => {
-    await db.add('accounts', { name: 'Banco', type: 'bank', balance: 0 })
+    await db.add('accounts', { name: 'Banco', balance: 0 })
     const { result } = renderHook(() => useData('accounts'))
     await waitFor(() => expect(result.current).toHaveLength(1))
     expect(result.current[0]).toMatchObject({ name: 'Banco' })
@@ -19,12 +19,12 @@ describe('useData', () => {
   it('atualiza automaticamente apos add (reatividade)', async () => {
     const { result } = renderHook(() => useData('accounts'))
     await waitFor(() => expect(result.current).toEqual([]))
-    await db.add('accounts', { name: 'Novo', type: 'cash', balance: 50 })
+    await db.add('accounts', { name: 'Novo', balance: 50 })
     await waitFor(() => expect(result.current).toHaveLength(1))
   })
 
   it('atualiza apos delete', async () => {
-    const id = await db.add('accounts', { name: 'Del', type: 'cash', balance: 0 })
+    const id = await db.add('accounts', { name: 'Del', balance: 0 })
     const { result } = renderHook(() => useData('accounts'))
     await waitFor(() => expect(result.current).toHaveLength(1))
     await db.delete('accounts', id)

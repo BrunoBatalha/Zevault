@@ -5,7 +5,7 @@
 
 import { ConfirmationModal, DataShare } from '@/components/shared';
 import { Button, Card } from '@/components/ui';
-import { db } from '@/core/database';
+import { db, prepareImportedData } from '@/core/database';
 import { useI18n } from '@/core/i18n';
 import {
     AlertTriangle,
@@ -68,12 +68,7 @@ export const SettingsView = ({ userName, onUserNameChange }: SettingsViewProps) 
 
     try {
       const text = await file.text();
-      const data = JSON.parse(text);
-
-      // Validação básica
-      if (!data.accounts || !data.categories || !data.transactions) {
-        throw new Error('Arquivo inválido');
-      }
+      const data = prepareImportedData(JSON.parse(text));
 
       // Limpar e importar
       await db.clear('accounts');
@@ -84,9 +79,9 @@ export const SettingsView = ({ userName, onUserNameChange }: SettingsViewProps) 
 
       for (const acc of data.accounts) await db.add('accounts', acc);
       for (const cat of data.categories) await db.add('categories', cat);
-      for (const card of data.creditCards || []) await db.add('creditCards', card);
+      for (const card of data.creditCards) await db.add('creditCards', card);
       for (const trans of data.transactions) await db.add('transactions', trans);
-      for (const cc of data.costCenters || []) await db.add('costCenters', cc);
+      for (const cc of data.costCenters) await db.add('costCenters', cc);
 
       setImportStatus('success');
       setTimeout(() => setImportStatus('idle'), 3000);

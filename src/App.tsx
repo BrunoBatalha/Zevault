@@ -118,13 +118,13 @@ function App() {
 
       <main
         className={`transition-all duration-300 ${
-          sidebarCollapsed ? 'ml-20' : 'ml-64'
+          sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'
         }`}
       >
-        <div className="p-6 max-w-7xl mx-auto">
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6">
           <Suspense fallback={<RouteFallback />}>
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<Dashboard userName={userName} />} />
               <Route path="/accounts" element={<AccountList />} />
               <Route path="/credit-cards" element={<CreditCardList />} />
               <Route path="/transactions" element={<TransactionList />} />

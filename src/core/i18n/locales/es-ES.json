@@ -103,10 +103,10 @@
       "openMenu": "Abrir menú"
     },
     "hero": {
-      "badge": "100% Client-Side y Seguro",
+      "badge": "Local-first y bajo tu control",
       "title": "Control Financiero",
-      "titleHighlight": "Sin Servidores, Sin Riesgos.",
-      "description": "El primer ERP financiero que funciona completamente en tu navegador usando <strong>IndexedDB</strong>. Tus datos nunca salen de tu dispositivo, garantizando privacidad absoluta y rendimiento instantáneo.",
+      "titleHighlight": "Directamente en Tu Navegador.",
+      "description": "Organiza tus finanzas en el navegador usando <strong>IndexedDB</strong>. Los datos de este MVP permanecen en este perfil del navegador, sin una cuenta remota.",
       "cta": "Comenzar Gratis",
       "docs": "Ver Documentación"
     },
@@ -118,12 +118,12 @@
         "description": "Utilizamos la base de datos nativa de tu navegador. Esto significa que el sistema funciona sin conexión y carga instantáneamente, sin esperar APIs lentas."
       },
       "privacy": {
-        "title": "Privacidad Zero-Knowledge",
-        "description": "No vemos tus datos. Existen solo en tu disco duro. No hay \"nube\" para hackear, garantizando total confidencialidad de tus finanzas."
+        "title": "Datos en tu navegador",
+        "description": "Este MVP no envía tus movimientos a un backend propio. La protección también depende de la seguridad de tu dispositivo y perfil del navegador."
       },
       "backup": {
         "title": "Backup y Portabilidad",
-        "description": "Genera archivos JSON cifrados de tus datos en cualquier momento. Exporta a Excel, migra de dispositivo o haz copias de seguridad con un clic."
+        "description": "Exporta un archivo JSON para guardar una copia o mover tus datos. El archivo exportado no tiene cifrado implementado."
       }
     },
     "comparison": {
@@ -131,14 +131,14 @@
       "description": "La mayoría de las aplicaciones financieras almacenan tus transacciones en servidores compartidos. Financier Pro invierte esta lógica. El navegador es el sistema operativo, y la base de datos es tuya.",
       "offlineFirst": "Funciona sin internet (Offline-First)",
       "noFees": "Sin cuotas de servidor",
-      "compliant": "Cumplimiento total de GDPR/LGPD por diseño",
+      "compliant": "Tú controlas la exportación y eliminación de datos locales",
       "terminal": {
         "dbLocation": "Database Location:",
         "dbLocationValue": "Localhost (IndexedDB)",
         "externalAccess": "External Access:",
-        "externalAccessValue": "Blocked",
+        "externalAccessValue": "Sin backend propio",
         "encryption": "Encryption:",
-        "encryptionValue": "Client-Side Enabled",
+        "encryptionValue": "No implementado",
         "systemInit": "> System initialized.",
         "connecting": "> Connecting to local storage... OK",
         "syncDisabled": "> Syncing disabled by default for security.",
@@ -157,6 +157,45 @@
 
   "dashboard": {
     "title": "Dashboard",
+    "greeting": "Hola, {{name}}",
+    "overview": "Tu visión financiera",
+    "financialOverview": "Tu dinero, sin sorpresas",
+    "financialOverviewDescription": "Mira qué está disponible, qué ya está comprometido y qué necesita tu atención.",
+    "newTransaction": "Nuevo movimiento",
+    "summaryTitle": "Resumen financiero",
+    "noAccount": "Sin cuenta vinculada",
+    "summary": {
+      "totalBalance": { "label": "Saldo actual", "description": "Suma de los saldos actuales de todas las cuentas." },
+      "committed": { "label": "Ya comprometido", "description": "Todos los gastos pendientes, incluidos los vencidos y futuros." },
+      "availableAfterCommitments": { "label": "Libre tras compromisos", "description": "Saldo actual menos todos los gastos que siguen pendientes." }
+    },
+    "cashFlowDescription": "Ingresos y gastos realizados en los últimos 30 días naturales.",
+    "cashFlowSummary": "En los últimos 30 días hubo {{income}} de ingresos, {{expense}} de gastos y un resultado de {{net}}.",
+    "attention": {
+      "title": "Necesita atención",
+      "description": "Pendientes que pueden afectar tu saldo.",
+      "overdue_one": "gasto vencido",
+      "overdue_other": "gastos vencidos",
+      "dueSoon_one": "vence en los próximos 7 días",
+      "dueSoon_other": "vencen en los próximos 7 días",
+      "next": "Próximo vencimiento",
+      "empty": "No hay gastos futuros pendientes."
+    },
+    "viewPending": "Revisar pendientes",
+    "commitments": {
+      "title": "Próximos compromisos",
+      "description": "Gastos pendientes, incluidos los que ya vencieron.",
+      "periodLabel": "Periodo de compromisos",
+      "period": { "7": "7 días", "30": "30 días", "all": "Todos" },
+      "overdue": "Vencido",
+      "emptyTitle": "Nada pendiente en este periodo",
+      "emptyDescription": "Cambia el periodo o registra un gasto programado.",
+      "viewAll": "Ver todas las transacciones"
+    },
+    "recentDescription": "Últimos movimientos registrados.",
+    "createFirstTransaction": "Crear primer movimiento",
+    "viewAllTransactions": "Ver todos",
+    "futureExpensesSummary": "Hay {{amount}} en gastos futuros pendientes durante {{months}} meses.",
     "totalBalance": "Saldo Total",
     "monthlyIncome": "Ingresos (Mes)",
     "monthlyExpense": "Gastos (Mes)",
@@ -193,7 +232,7 @@
     "newBankAccount": "Nueva Cuenta Bancaria",
     "accountName": "Nombre de la Cuenta",
     "accountNamePlaceholder": "Ej: Santander, Caja Chica, BBVA...",
-    "accountType": "Tipo de Cuenta",
+    "badge": "Banco / Cuenta",
     "currentBalance": "Saldo Actual",
     "balanceWarning": "Atención: Cambiar el saldo manualmente puede generar inconsistencias en los informes si no hay transacciones correspondientes.",
     "saveAccount": "Guardar Cuenta",
@@ -202,24 +241,15 @@
       "editTitle": "Editar Cuenta",
       "name": "Nombre de la Cuenta",
       "namePlaceholder": "Ej: Santander, Caja Chica, BBVA...",
-      "type": "Tipo de Cuenta",
       "balance": "Saldo Actual",
       "balanceWarning": "Atención: Cambiar el saldo manualmente puede generar inconsistencias en los informes si no hay transacciones correspondientes.",
       "save": "Guardar Cuenta"
     },
-    "types": {
-      "bank": "Cuenta",
-      "cash": "Efectivo",
-      "card": "Tarjeta"
-    },
-    "labels": {
-      "checkingAccount": "Cuenta Corriente",
-      "cash": "Efectivo",
-      "creditCard": "Tarjeta de Crédito"
-    },
     "emptyState": "No se encontraron cuentas con este filtro.",
     "deleteTitle": "¿Eliminar Cuenta?",
     "deleteMessage": "¿Estás seguro de que deseas eliminar esta cuenta? Todas las transacciones vinculadas podrían quedar huérfanas y el saldo ya no se contabilizará.",
+    "linkedDeleteTitle": "Cuenta vinculada a una tarjeta",
+    "linkedDeleteMessage": "Esta cuenta está vinculada a la tarjeta {{card}}. Cambia la cuenta de la tarjeta o elimina la tarjeta antes de borrar esta cuenta.",
     "found_one": "{{count}} cuenta encontrada",
     "found_other": "{{count}} cuentas encontradas"
   },
@@ -237,7 +267,10 @@
     "limit": "Límite",
     "closingDay": "Día de Cierre",
     "dueDay": "Día de Vencimiento",
+    "account": "Cuenta vinculada",
+    "unlinkedAccount": "Sin cuenta vinculada",
     "saveCard": "Guardar Tarjeta",
+    "badge": "Tarjeta de Crédito",
     "label": "Tarjeta de Crédito",
     "emptyState": "No se encontraron tarjetas.",
     "deleteTitle": "¿Eliminar Tarjeta?",
@@ -249,6 +282,9 @@
       "editTitle": "Editar Tarjeta",
       "name": "Nombre de la Tarjeta",
       "namePlaceholder": "Ej: Visa Platinum, Amex Gold...",
+      "account": "Cuenta vinculada",
+      "selectAccount": "Selecciona una cuenta...",
+      "noAccounts": "Crea una cuenta en Bancos y Cuentas antes de crear la tarjeta.",
       "limit": "Límite",
       "closingDay": "Día de Cierre",
       "dueDay": "Día de Vencimiento",
@@ -317,12 +353,40 @@
       "sourceAccount": "Cuenta Origen",
       "destinationAccount": "Cuenta Destino",
       "installments": "Cuotas",
+      "purchaseDate": "Fecha de compra",
+      "totalAmount": "Importe total de la compra",
+      "installmentOption": "{{count}}x {{label}} ({{amount}})",
+      "lastInstallmentNotice": "La última cuota será de {{amount}} para completar el total de {{total}}.",
       "noInterest": "sin intereses",
       "inFull": "al contado",
       "category": "Categoría",
       "costCenter": "Centro de Coste",
       "general": "General",
       "save": "Guardar Transacción"
+    },
+    "impact": {
+      "title": "Efecto en el saldo",
+      "empty": "Introduce un importe para ver el efecto del movimiento.",
+      "selectAccount": "Selecciona una cuenta para calcular el efecto en el saldo.",
+      "selectDestination": "Selecciona una cuenta de destino para revisar la transferencia.",
+      "expense": "Al guardar, {{account}} disminuirá {{amount}}.",
+      "income": "Al guardar, {{account}} aumentará {{amount}}.",
+      "transfer": "Al guardar, {{amount}} pasará de {{source}} a {{destination}}.",
+      "pending": "Este movimiento quedará pendiente y todavía no cambiará ningún saldo.",
+      "credit": "La compra de {{amount}} en {{card}} se creará en {{installments}} cuota(s) pendiente(s); aún no cambiará el saldo de una cuenta.",
+      "edit": "La edición actualiza los datos del movimiento. Revisa la cuenta, el importe y el estado antes de guardar."
+    },
+    "statusChange": {
+      "title": { "paid": "¿Marcar como pagado?", "pending": "¿Revertir a pendiente?" },
+      "payExpense": "Al confirmar, {{account}} disminuirá {{amount}}.",
+      "revertExpense": "Al confirmar, {{account}} recibirá {{amount}} de vuelta.",
+      "payIncome": "Al confirmar, {{account}} recibirá {{amount}}.",
+      "revertIncome": "Al confirmar, {{account}} disminuirá {{amount}}.",
+      "payTransfer": "Al confirmar, {{amount}} saldrá de {{source}} y entrará en {{destination}}.",
+      "revertTransfer": "Al confirmar, {{amount}} volverá de {{destination}} a {{source}}.",
+      "payCreditCard": "Al confirmar, {{account}} disminuirá {{amount}}.",
+      "revertCreditCard": "Al confirmar, {{account}} recibirá {{amount}} de vuelta.",
+      "creditCardMissingAccount": "Vincula esta tarjeta a una cuenta antes de marcar la cuota como pagada."
     },
     "type": "Tipo",
     "date": "Fecha",
@@ -376,6 +440,9 @@
       "status": "Estado",
       "actions": "Acciones"
     },
+    "empty": "No se encontraron transacciones.",
+    "transactionsCount": "transacciones",
+    "pending": "Pendiente",
     "actions": {
       "markAsPaid": "Marcar como Pagado",
       "markPaid": "Marcar como Pagado",
@@ -393,8 +460,16 @@
       "singleHint": "Elimina solo la cuota seleccionada.",
       "future": "Eliminar esta y futuras",
       "futureHint": "Elimina esta y las próximas cuotas.",
-      "all": "Eliminar todas",
-      "allHint": "Elimina todas las cuotas de la serie."
+      "all": "Eliminar compra completa",
+      "allHint": "Elimina todas las cuotas de la compra, incluidas las ya pagadas."
+    },
+    "editInstallment": {
+      "title": "Editar compra a plazos",
+      "description": "Esta transacción forma parte de una compra a plazos. ¿Dónde deseas aplicar la edición?",
+      "single": "Editar solo este registro",
+      "singleHint": "Cambia solo la cuota seleccionada.",
+      "all": "Editar compra completa",
+      "allHint": "Recalcula las cuotas y vencimientos a partir del total, fecha de compra y tarjeta. Las cuotas pagadas se recrearán como pendientes."
     },
     "views": {
       "list": "Lista",
@@ -466,6 +541,10 @@
     "defaultUser": "Usuario",
     "defaultEmail": "usuario@local",
     "openNavigation": "Abrir navegación",
+    "closeNavigation": "Contraer navegación",
+    "primaryNavigation": "Navegación principal",
+    "mobileNavigation": "Navegación móvil",
+    "more": "Más",
     "close": "Cerrar",
     "darkMode": "Modo Oscuro",
     "lightMode": "Modo Claro",

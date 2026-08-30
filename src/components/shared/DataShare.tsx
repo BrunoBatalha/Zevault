@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { db } from '@/core/database';
+import { db, prepareImportedData } from '@/core/database';
 import { Share2, RefreshCw, DownloadCloud } from 'lucide-react';
 import { ProgressModal } from './ProgressModal';
 
@@ -116,7 +116,7 @@ export const DataShare: React.FC = () => {
       const blob = new Blob(chunks);
       const text = await blob.text();
       const parsedData = JSON.parse(text);
-      const data = parsedData.data || parsedData;
+      const data = prepareImportedData(parsedData.data || parsedData);
 
       // Import to IndexedDB
       if (data.accounts) {

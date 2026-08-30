@@ -5,9 +5,8 @@
 import type { Account, Category, CostCenter } from '@/types/entities';
 
 export const SEED_ACCOUNTS: Omit<Account, 'id'>[] = [
-  { name: 'Banco Principal', type: 'bank', balance: 15000 },
-  { name: 'Caixa Pequeno', type: 'cash', balance: 500 },
-  { name: 'Cartão Corporativo', type: 'card', balance: -1200 },
+  { name: 'Banco Principal', balance: 15000 },
+  { name: 'Caixa Pequeno', balance: 500 },
 ];
 
 export const SEED_CATEGORIES: Omit<Category, 'id'>[] = [
