@@ -6,6 +6,7 @@
 import { DB_NAME, DB_VERSION } from '@/core/utils/constants';
 import type { Account, Transaction } from '@/types';
 import { STORE_CONFIGS } from './stores';
+import type { ImportData } from './import-data';
 import type { StoreName, SubscriberCallback } from './types';
 
 /**
@@ -453,6 +454,35 @@ class NativeDB {
         console.error(`[DB] Error clearing ${storeName}:`, (e.target as IDBRequest).error);
         reject((e.target as IDBRequest).error);
       };
+    });
+  }
+
+  /** Substitui todos os stores em uma única transação atômica. */
+  async replaceAllData(data: ImportData): Promise<void> {
+    await this.connect();
+    const storeNames = STORE_CONFIGS.map(({ name }) => name);
+    return new Promise((resolve, reject) => {
+      const tx = this.db!.transaction(storeNames, 'readwrite');
+      const values: Record<StoreName, unknown[]> = {
+        accounts: data.accounts,
+        categories: data.categories,
+        costCenters: data.costCenters,
+        transactions: data.transactions,
+        creditCards: data.creditCards,
+      };
+
+      for (const storeName of storeNames) {
+        const store = tx.objectStore(storeName);
+        store.clear();
+        values[storeName].forEach((item) => store.put(item));
+      }
+
+      tx.oncomplete = () => {
+        this.notify();
+        resolve();
+      };
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error ?? new Error('Database replacement aborted'));
     });
   }
 

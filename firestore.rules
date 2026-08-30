@@ -1,0 +1,96 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+
+    match /syncSessions/{code} {
+      allow list: if false;
+      // A criação usa uma transação que lê o código antes de gravá-lo.
+      // A leitura exata é autenticada; listagem continua proibida.
+      allow get: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'waiting'
+        && request.resource.data.protocolVersion == 1
+        && request.resource.data.joinExpiresAt > request.time
+        && request.resource.data.joinExpiresAt <= request.time + duration.value(5, 'm');
+
+      allow update: if signedIn()
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.protocolVersion == resource.data.protocolVersion
+        && (
+          (request.auth.uid == resource.data.ownerUid && (
+            (resource.data.status == 'waiting' && request.resource.data.status in ['approved', 'cancelled'])
+            || (resource.data.status == 'approved' && request.resource.data.status in ['payload_ready', 'cancelled'])
+            || (resource.data.status == 'payload_ready' && request.resource.data.status == 'cancelled')
+            || (resource.data.status in ['completed', 'cancelled']
+              && request.resource.data.status == resource.data.status
+              && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                'ownerPublicKey', 'receiverPublicKey', 'chunkCount', 'chunkSize',
+                'wrappedVaultKey', 'backupIv', 'wrappedKeyIv', 'hkdfSalt', 'aad',
+                'sha256', 'payloadSize'
+              ]))
+          ))
+          || (request.auth.uid == resource.data.receiverUid
+            && resource.data.status == 'payload_ready'
+            && request.resource.data.status == 'completed'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'completedAt']))
+          || (request.auth.uid == resource.data.receiverUid
+            && resource.data.status == 'completed'
+            && request.resource.data.status == 'completed'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+              'ownerPublicKey', 'receiverPublicKey', 'chunkCount', 'chunkSize',
+              'wrappedVaultKey', 'backupIv', 'wrappedKeyIv', 'hkdfSalt', 'aad',
+              'sha256', 'payloadSize'
+            ]))
+        );
+
+      allow delete: if signedIn()
+        && (
+          (request.auth.uid == resource.data.ownerUid && resource.data.status in ['completed', 'cancelled'])
+          || (request.auth.uid == resource.data.receiverUid && resource.data.status == 'completed')
+        );
+
+      match /requests/{receiverUid} {
+        allow create: if signedIn()
+          && request.auth.uid == receiverUid
+          && request.resource.data.uid == receiverUid
+          && get(/databases/$(database)/documents/syncSessions/$(code)).data.status == 'waiting'
+          && get(/databases/$(database)/documents/syncSessions/$(code)).data.joinExpiresAt > request.time;
+        allow get: if signedIn() && (request.auth.uid == receiverUid
+          || request.auth.uid == get(/databases/$(database)/documents/syncSessions/$(code)).data.ownerUid);
+        allow list: if signedIn()
+          && request.auth.uid == get(/databases/$(database)/documents/syncSessions/$(code)).data.ownerUid;
+        allow update: if false;
+        allow delete: if signedIn() && (request.auth.uid == receiverUid
+          || request.auth.uid == get(/databases/$(database)/documents/syncSessions/$(code)).data.ownerUid);
+      }
+
+      match /syncChunks/{chunkId} {
+        function session() {
+          return get(/databases/$(database)/documents/syncSessions/$(code)).data;
+        }
+        allow list: if false;
+        allow get: if signedIn()
+          && request.auth.uid == session().receiverUid
+          && session().status == 'payload_ready';
+        allow create: if signedIn()
+          && request.auth.uid == session().ownerUid
+          && session().status == 'approved'
+          && request.resource.data.index is int
+          && request.resource.data.totalChunks is int
+          && request.resource.data.size is int
+          && request.resource.data.bytes is bytes
+          && request.resource.data.size == request.resource.data.bytes.size()
+          && request.resource.data.size > 0
+          && request.resource.data.size <= 716800
+          && request.resource.data.expiresAt == session().transferExpiresAt;
+        allow update: if false;
+        allow delete: if signedIn() && (
+          (request.auth.uid == session().ownerUid && session().status in ['approved', 'completed', 'cancelled'])
+          || (request.auth.uid == session().receiverUid && session().status == 'completed')
+        );
+      }
+    }
+  }
+}

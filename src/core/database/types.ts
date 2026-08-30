@@ -3,6 +3,7 @@
  */
 
 import type { Transaction } from '@/types';
+import type { ImportData } from './import-data';
 
 export type StoreName = 'accounts' | 'categories' | 'costCenters' | 'transactions' | 'creditCards';
 
@@ -24,6 +25,7 @@ export interface DatabaseOperations {
   changeCreditCardTransactionStatus(transactionId: number, newStatus: 'paid' | 'pending', cardAccountId?: number): Promise<void>;
   deleteCreditCardTransactions(transactionIds: number[]): Promise<void>;
   updateCreditCardTransaction(transactionId: number, updates: Partial<Transaction>, cardAccountId: number): Promise<void>;
+  replaceAllData(data: ImportData): Promise<void>;
   deleteDB(): Promise<void>;
 }
 

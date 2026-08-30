@@ -1,0 +1,17 @@
+{
+  "indexes": [],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "syncSessions",
+      "fieldPath": "transferExpiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "syncChunks",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    }
+  ]
+}

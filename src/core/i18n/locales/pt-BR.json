@@ -119,7 +119,7 @@
       },
       "privacy": {
         "title": "Dados no seu navegador",
-        "description": "Este MVP não envia seus lançamentos para um backend próprio. A proteção também depende da segurança do seu dispositivo e do perfil do navegador."
+        "description": "Por padrão, seus lançamentos ficam neste navegador. Na sincronização opcional, apenas uma cópia temporária com criptografia de ponta a ponta é enviada ao Firebase."
       },
       "backup": {
         "title": "Backup e Portabilidade",
@@ -138,7 +138,7 @@
         "externalAccess": "External Access:",
         "externalAccessValue": "Sem backend próprio",
         "encryption": "Encryption:",
-        "encryptionValue": "Não implementada",
+        "encryptionValue": "Ponta a ponta na sincronização",
         "systemInit": "> System initialized.",
         "connecting": "> Connecting to local storage... OK",
         "syncDisabled": "> Syncing disabled by default for security.",
@@ -500,6 +500,55 @@
       "import": "Importar Backup",
       "importSuccess": "Importação realizada com sucesso!",
       "importError": "Formato inválido"
+    },
+    "sync": {
+      "title": "Sincronizar com outro dispositivo",
+      "description": "Seus dados são protegidos com criptografia de ponta a ponta. A cópia temporária é excluída após a transferência.",
+      "notConfigured": "A sincronização ainda não foi configurada. Adicione as variáveis do Firebase para habilitá-la.",
+      "sendTitle": "Enviar deste dispositivo",
+      "sendDescription": "Crie um código temporário e autorize o outro dispositivo antes de enviar.",
+      "receiveTitle": "Receber neste dispositivo",
+      "codeLabel": "Código de sincronização",
+      "start": "Iniciar sincronização",
+      "request": "Solicitar sincronização",
+      "activeCode": "Código temporário",
+      "copyCode": "Copiar código",
+      "expiresIn": "Expira em {{time}}",
+      "confirmFingerprint": "Confira se este número aparece igual nos dois dispositivos:",
+      "authorize": "Autorizar dispositivo",
+      "previewTitle": "Dados prontos para importar",
+      "replaceWarning": "Ao continuar, todos os dados financeiros atuais deste dispositivo serão substituídos.",
+      "replaceAndImport": "Substituir e importar",
+      "retryCleanup": "Tentar excluir novamente",
+      "errorTitle": "Não foi possível sincronizar",
+      "tryAgain": "Tentar novamente",
+      "status": {
+        "starting": "Criando sessão segura...",
+        "waitingDevice": "Aguardando o outro dispositivo informar o código.",
+        "waitingApproval": "Aguardando autorização no dispositivo que iniciou.",
+        "receiving": "Baixando e verificando o backup criptografado...",
+        "preparing": "Autorizado. Aguardando o backup criptografado...",
+        "waitingImport": "Backup enviado. Aguardando confirmação da importação."
+      },
+      "success": {
+        "imported": "Dados sincronizados com sucesso.",
+        "receivedByOther": "O outro dispositivo recebeu e importou os dados.",
+        "cleaned": "A cópia criptografada foi removida do servidor.",
+        "cleanupPending": "Os dados foram importados, mas a exclusão da cópia remota ainda precisa ser repetida."
+      },
+      "errors": {
+        "generic": "Falha inesperada na sincronização.",
+        "expired": "O código ou a transferência expirou. Inicie uma nova sincronização.",
+        "cancelled": "A sincronização foi cancelada pelo outro dispositivo.",
+        "notFound": "Código inválido ou sessão não encontrada."
+      },
+      "stores": {
+        "accounts": "Contas",
+        "categories": "Categorias",
+        "costCenters": "Centros",
+        "transactions": "Transações",
+        "creditCards": "Cartões"
+      }
     },
     "danger": {
       "title": "Zona de Perigo",

@@ -1,5 +1,20 @@
 # React + TypeScript + Vite
 
+## Sincronização E2EE
+
+A sincronização entre dispositivos usa Firebase Anonymous Auth e Firestore. O backup cifrado é dividido em chunks binários temporários de até 700 KiB, remontado no receptor e apagado após a importação. Copie `.env.example` para `.env.local` e preencha as variáveis do projeto Firebase. Sem essas variáveis, o aplicativo continua local-first e a sincronização fica desabilitada.
+
+Antes de usar em produção:
+
+- habilite Anonymous Authentication, Firestore e App Check no console;
+- publique `firestore.rules` e o TTL declarado em `firestore.indexes.json`;
+- valide o fluxo com dois navegadores usando os emuladores definidos em `firebase.json`;
+- confirme no Firestore as políticas TTL de `syncSessions.transferExpiresAt` e `syncChunks.expiresAt`.
+
+As chaves ECDH são efêmeras e ficam somente na memória. Recarregar ou fechar a página invalida a transferência em andamento.
+
+Para testar contra um projeto Firebase real no `localhost`, registre um token em App Check → Gerenciar tokens de depuração e configure `VITE_FIREBASE_APPCHECK_DEBUG_TOKEN` somente no `.env.local`. Esse token nunca deve ser publicado ou incluído no bundle de produção.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

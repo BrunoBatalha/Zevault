@@ -5,8 +5,9 @@
 
 import { ConfirmationModal, DataShare } from '@/components/shared';
 import { Button, Card } from '@/components/ui';
-import { db, prepareImportedData } from '@/core/database';
+import { db, prepareImportedData, prepareSyncBackup } from '@/core/database';
 import { useI18n } from '@/core/i18n';
+import { createBackupDocument } from '@/core/sync';
 import {
     AlertTriangle,
     Check,
@@ -38,15 +39,7 @@ export const SettingsView = ({ userName, onUserNameChange }: SettingsViewProps) 
 
   const handleExport = async () => {
     try {
-      const data = {
-        accounts: await db.getAll('accounts'),
-        categories: await db.getAll('categories'),
-        creditCards: await db.getAll('creditCards'),
-        transactions: await db.getAll('transactions'),
-        costCenters: await db.getAll('costCenters'),
-        exportDate: new Date().toISOString(),
-        version: '1.0',
-      };
+      const data = await createBackupDocument();
 
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: 'application/json',
@@ -68,20 +61,11 @@ export const SettingsView = ({ userName, onUserNameChange }: SettingsViewProps) 
 
     try {
       const text = await file.text();
-      const data = prepareImportedData(JSON.parse(text));
-
-      // Limpar e importar
-      await db.clear('accounts');
-      await db.clear('categories');
-      await db.clear('creditCards');
-      await db.clear('transactions');
-      await db.clear('costCenters');
-
-      for (const acc of data.accounts) await db.add('accounts', acc);
-      for (const cat of data.categories) await db.add('categories', cat);
-      for (const card of data.creditCards) await db.add('creditCards', card);
-      for (const trans of data.transactions) await db.add('transactions', trans);
-      for (const cc of data.costCenters) await db.add('costCenters', cc);
+      const parsed = JSON.parse(text) as unknown;
+      const data = parsed && typeof parsed === 'object' && 'protocolVersion' in parsed
+        ? prepareSyncBackup(parsed).data
+        : prepareImportedData(parsed);
+      await db.replaceAllData(data);
 
       setImportStatus('success');
       setTimeout(() => setImportStatus('idle'), 3000);

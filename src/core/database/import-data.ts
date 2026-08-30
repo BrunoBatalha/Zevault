@@ -1,4 +1,5 @@
 import type { Account, Category, CostCenter, CreditCard, Transaction } from '@/types';
+import { DB_VERSION } from '@/core/utils/constants';
 
 export interface ImportData {
   accounts: Account[];
@@ -6,6 +7,14 @@ export interface ImportData {
   costCenters: CostCenter[];
   transactions: Transaction[];
   creditCards: CreditCard[];
+}
+
+export interface SyncBackupDocument {
+  protocolVersion: 1;
+  schemaVersion: number;
+  createdAt: string;
+  counts: Record<keyof ImportData, number>;
+  data: ImportData;
 }
 
 const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
@@ -65,6 +74,10 @@ export const prepareImportedData = (input: unknown): ImportData => {
       || typeof transaction.date !== 'string'
       || !['paid', 'pending'].includes(String(transaction.status))
     ) throw new Error('Invalid transaction');
+    const accountId = typeof transaction.accountId === 'number' ? transaction.accountId : null;
+    const toAccountId = typeof transaction.toAccountId === 'number' ? transaction.toAccountId : null;
+    if (accountId !== null && !accountIds.has(accountId)) throw new Error('Invalid transaction account');
+    if (toAccountId !== null && !accountIds.has(toAccountId)) throw new Error('Invalid transfer account');
     return transaction as unknown as Transaction;
   });
   const rawCostCenters = isArray(data.costCenters) ? data.costCenters : [];
@@ -77,6 +90,28 @@ export const prepareImportedData = (input: unknown): ImportData => {
     ) throw new Error('Invalid cost center');
     return costCenter as unknown as CostCenter;
   });
+  const categoryIds = new Set(categories.map((category) => category.id!));
+  const costCenterIds = new Set(costCenters.map((costCenter) => costCenter.id!));
+  const creditCardIds = new Set(creditCards.map((card) => card.id!));
+  const installmentGroups = new Map<string, { total: number; current: Set<number> }>();
+  transactions.forEach((transaction) => {
+    if (typeof transaction.categoryId === 'number' && !categoryIds.has(transaction.categoryId)) throw new Error('Invalid transaction category');
+    if (typeof transaction.costCenterId === 'number' && !costCenterIds.has(transaction.costCenterId)) throw new Error('Invalid transaction cost center');
+    if (typeof transaction.creditCardId === 'number' && !creditCardIds.has(transaction.creditCardId)) throw new Error('Invalid transaction credit card');
+    if (transaction.installmentCurrent !== undefined || transaction.installmentTotal !== undefined) {
+      if (
+        !transaction.groupId
+        || !Number.isInteger(transaction.installmentCurrent)
+        || !Number.isInteger(transaction.installmentTotal)
+        || transaction.installmentCurrent! < 1
+        || transaction.installmentTotal! < transaction.installmentCurrent!
+      ) throw new Error('Invalid installment');
+      const group = installmentGroups.get(transaction.groupId) ?? { total: transaction.installmentTotal!, current: new Set<number>() };
+      if (group.total !== transaction.installmentTotal || group.current.has(transaction.installmentCurrent!)) throw new Error('Invalid installment group');
+      group.current.add(transaction.installmentCurrent!);
+      installmentGroups.set(transaction.groupId, group);
+    }
+  });
 
   return {
     accounts,
@@ -84,5 +119,34 @@ export const prepareImportedData = (input: unknown): ImportData => {
     transactions,
     creditCards,
     costCenters,
+  };
+};
+
+export const prepareSyncBackup = (input: unknown): SyncBackupDocument => {
+  const backup = asRecord(input, 'sync backup');
+  if (
+    backup.protocolVersion !== 1
+    || typeof backup.schemaVersion !== 'number'
+    || backup.schemaVersion < 1
+    || backup.schemaVersion > DB_VERSION
+    || typeof backup.createdAt !== 'string'
+  ) throw new Error('Invalid sync backup');
+
+  const rawData = asRecord(backup.data, 'sync backup data');
+  for (const storeName of ['accounts', 'categories', 'costCenters', 'transactions', 'creditCards']) {
+    if (!isArray(rawData[storeName])) throw new Error(`Missing ${storeName}`);
+  }
+  const data = prepareImportedData(rawData);
+  const counts = asRecord(backup.counts, 'sync backup counts');
+  for (const storeName of Object.keys(data) as Array<keyof ImportData>) {
+    if (counts[storeName] !== data[storeName].length) throw new Error(`Invalid ${storeName} count`);
+  }
+
+  return {
+    protocolVersion: 1,
+    schemaVersion: backup.schemaVersion,
+    createdAt: backup.createdAt,
+    counts: counts as unknown as Record<keyof ImportData, number>,
+    data,
   };
 };

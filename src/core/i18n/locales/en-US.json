@@ -119,7 +119,7 @@
       },
       "privacy": {
         "title": "Data in your browser",
-        "description": "This MVP does not send your transactions to its own backend. Protection also depends on your device and browser profile security."
+        "description": "By default, your transactions stay in this browser. Optional synchronization sends only a temporary end-to-end encrypted copy to Firebase."
       },
       "backup": {
         "title": "Backup and Portability",
@@ -138,7 +138,7 @@
         "externalAccess": "External Access:",
         "externalAccessValue": "No first-party backend",
         "encryption": "Encryption:",
-        "encryptionValue": "Not implemented",
+        "encryptionValue": "End-to-end during sync",
         "systemInit": "> System initialized.",
         "connecting": "> Connecting to local storage... OK",
         "syncDisabled": "> Syncing disabled by default for security.",
@@ -500,6 +500,55 @@
       "import": "Import Backup",
       "importSuccess": "Import completed successfully!",
       "importError": "Invalid format"
+    },
+    "sync": {
+      "title": "Sync with another device",
+      "description": "Your data is protected with end-to-end encryption. The temporary copy is deleted after transfer.",
+      "notConfigured": "Sync has not been configured yet. Add the Firebase environment variables to enable it.",
+      "sendTitle": "Send from this device",
+      "sendDescription": "Create a temporary code and authorize the other device before sending.",
+      "receiveTitle": "Receive on this device",
+      "codeLabel": "Synchronization code",
+      "start": "Start synchronization",
+      "request": "Request synchronization",
+      "activeCode": "Temporary code",
+      "copyCode": "Copy code",
+      "expiresIn": "Expires in {{time}}",
+      "confirmFingerprint": "Check that this number is the same on both devices:",
+      "authorize": "Authorize device",
+      "previewTitle": "Data ready to import",
+      "replaceWarning": "Continuing will replace all financial data currently stored on this device.",
+      "replaceAndImport": "Replace and import",
+      "retryCleanup": "Retry deletion",
+      "errorTitle": "Synchronization failed",
+      "tryAgain": "Try again",
+      "status": {
+        "starting": "Creating secure session...",
+        "waitingDevice": "Waiting for the other device to enter the code.",
+        "waitingApproval": "Waiting for authorization on the initiating device.",
+        "receiving": "Downloading and verifying the encrypted backup...",
+        "preparing": "Authorized. Waiting for the encrypted backup...",
+        "waitingImport": "Backup sent. Waiting for import confirmation."
+      },
+      "success": {
+        "imported": "Data synchronized successfully.",
+        "receivedByOther": "The other device received and imported the data.",
+        "cleaned": "The encrypted copy was removed from the server.",
+        "cleanupPending": "The data was imported, but deletion of the remote copy must be retried."
+      },
+      "errors": {
+        "generic": "Unexpected synchronization failure.",
+        "expired": "The code or transfer expired. Start a new synchronization.",
+        "cancelled": "The other device cancelled synchronization.",
+        "notFound": "Invalid code or synchronization session not found."
+      },
+      "stores": {
+        "accounts": "Accounts",
+        "categories": "Categories",
+        "costCenters": "Cost centers",
+        "transactions": "Transactions",
+        "creditCards": "Cards"
+      }
     },
     "danger": {
       "title": "Danger Zone",

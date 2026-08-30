@@ -10,12 +10,16 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:rules": "vitest run --config firebase/vitest.config.ts",
+    "test:firebase": "firebase emulators:exec --project demo-zevault --only auth,firestore \"npm run test:rules\""
   },
   "dependencies": {
+    "firebase": "^12.18.0",
     "i18next": "^25.7.3",
     "i18next-browser-languagedetector": "^8.2.0",
     "lucide-react": "^0.562.0",
+    "qrcode.react": "^4.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-i18next": "^16.5.0",
@@ -24,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@tailwindcss/vite": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -36,6 +41,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "fake-indexeddb": "^6.2.5",
+    "firebase-tools": "^15.28.2",
     "globals": "^16.5.0",
     "jsdom": "^28.1.0",
     "tailwindcss": "^4.1.18",

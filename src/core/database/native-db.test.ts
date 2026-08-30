@@ -217,3 +217,22 @@ describe('NativeDB.subscribe', () => {
     expect(called).toBe(0)
   })
 })
+
+describe('NativeDB.replaceAllData', () => {
+  it('substitui os cinco stores preservando ids', async () => {
+    await db.add('accounts', { name: 'Antiga', balance: 1 })
+    await db.replaceAllData({
+      accounts: [{ id: 9, name: 'Nova', balance: 500 }],
+      categories: [{ id: 8, name: 'Receita', type: 'income' }],
+      costCenters: [{ id: 7, name: 'Casa', budget: 1000 }],
+      creditCards: [{ id: 6, name: 'Visa', limit: 2000, closingDay: 10, dueDay: 20, accountId: 9 }],
+      transactions: [{ id: 5, type: 'expense', amount: 10, description: 'Compra', date: '2026-01-01', status: 'pending', accountId: 9 }],
+    })
+
+    expect(await db.getAll('accounts')).toEqual([{ id: 9, name: 'Nova', balance: 500 }])
+    expect(await db.getAll('categories')).toHaveLength(1)
+    expect(await db.getAll('costCenters')).toHaveLength(1)
+    expect(await db.getAll('creditCards')).toHaveLength(1)
+    expect(await db.getAll('transactions')).toHaveLength(1)
+  })
+})
