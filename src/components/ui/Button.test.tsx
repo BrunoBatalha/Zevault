@@ -25,7 +25,7 @@ describe('Button', () => {
 
   it('aplica variante primary por default', () => {
     render(<Button>X</Button>)
-    expect(screen.getByRole('button')).toHaveClass('bg-indigo-600')
+    expect(screen.getByRole('button')).toHaveClass('bg-emerald-600')
   })
 
   it('aplica variante danger', () => {

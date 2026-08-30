@@ -69,7 +69,7 @@ export const CategoryModal = ({ isOpen, onClose, categoryToEdit = null }: Catego
               type="text"
               required
               placeholder={t('categories.modal.namePlaceholder')}
-              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
@@ -86,7 +86,7 @@ export const CategoryModal = ({ isOpen, onClose, categoryToEdit = null }: Catego
                   onClick={() => setFormData({ ...formData, type: tp })}
                   className={`flex-1 text-sm py-1.5 rounded-md capitalize font-medium transition-all ${
                     formData.type === tp
-                      ? 'bg-white dark:bg-slate-600 shadow text-indigo-600 dark:text-indigo-400'
+                      ? 'bg-white dark:bg-slate-600 shadow text-emerald-600 dark:text-emerald-400'
                       : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                   }`}
                 >

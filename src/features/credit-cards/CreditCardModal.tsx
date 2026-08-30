@@ -81,7 +81,7 @@ export const CreditCardModal = ({ isOpen, onClose, cardToEdit = null }: CreditCa
               required
               value={formData.accountId}
               onChange={(e) => setFormData({ ...formData, accountId: e.target.value })}
-              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
             >
               <option value="">{t('creditCards.modal.selectAccount')}</option>
               {accounts.map((account) => (
@@ -102,7 +102,7 @@ export const CreditCardModal = ({ isOpen, onClose, cardToEdit = null }: CreditCa
               type="text"
               required
               placeholder={t('creditCards.modal.namePlaceholder')}
-              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
@@ -115,7 +115,7 @@ export const CreditCardModal = ({ isOpen, onClose, cardToEdit = null }: CreditCa
               type="number"
               step="0.01"
               required
-              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
               value={formData.limit}
               onChange={(e) => setFormData({ ...formData, limit: parseFloat(e.target.value) || 0 })}
             />
@@ -130,7 +130,7 @@ export const CreditCardModal = ({ isOpen, onClose, cardToEdit = null }: CreditCa
                 min="1"
                 max="31"
                 required
-                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                 value={formData.closingDay}
                 onChange={(e) =>
                   setFormData({ ...formData, closingDay: parseInt(e.target.value) || 1 })
@@ -146,7 +146,7 @@ export const CreditCardModal = ({ isOpen, onClose, cardToEdit = null }: CreditCa
                 min="1"
                 max="31"
                 required
-                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                 value={formData.dueDay}
                 onChange={(e) =>
                   setFormData({ ...formData, dueDay: parseInt(e.target.value) || 10 })

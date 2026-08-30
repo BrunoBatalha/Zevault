@@ -341,7 +341,7 @@ export const TransactionList = () => {
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-700">
             {transaction.isCreditCard ? (
-              <CreditCardIcon className="w-4 h-4 text-indigo-500" />
+              <CreditCardIcon className="w-4 h-4 text-emerald-500" />
             ) : (
               getTypeIcon(transaction.type)
             )}
@@ -487,7 +487,7 @@ export const TransactionList = () => {
               <input
                 type="text"
                 placeholder={t('transactions.search')}
-                className="w-full pl-9 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full pl-9 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -495,7 +495,7 @@ export const TransactionList = () => {
 
             {/* Filtro de Tipo */}
             <select
-              className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+              className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500"
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
             >
@@ -507,7 +507,7 @@ export const TransactionList = () => {
 
             {/* Filtro de Status */}
             <select
-              className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+              className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
             >
@@ -522,7 +522,7 @@ export const TransactionList = () => {
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-md ${
                   viewMode === 'list'
-                    ? 'bg-white dark:bg-slate-600 shadow text-indigo-600 dark:text-indigo-400'
+                    ? 'bg-white dark:bg-slate-600 shadow text-emerald-600 dark:text-emerald-400'
                     : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
               >
@@ -532,7 +532,7 @@ export const TransactionList = () => {
                 onClick={() => setViewMode('monthly')}
                 className={`p-2 rounded-md ${
                   viewMode === 'monthly'
-                    ? 'bg-white dark:bg-slate-600 shadow text-indigo-600 dark:text-indigo-400'
+                    ? 'bg-white dark:bg-slate-600 shadow text-emerald-600 dark:text-emerald-400'
                     : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
               >
@@ -593,7 +593,7 @@ export const TransactionList = () => {
                     }}
                     className="w-full text-left mb-3 flex items-center justify-between group"
                   >
-                    <h3 className="font-semibold text-slate-800 dark:text-white capitalize group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                    <h3 className="font-semibold text-slate-800 dark:text-white capitalize group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
                       {formatMonthYear(month)}
                     </h3>
                     <span className="text-sm text-slate-500 dark:text-slate-400">

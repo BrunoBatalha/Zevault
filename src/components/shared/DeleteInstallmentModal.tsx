@@ -40,7 +40,7 @@ export const DeleteInstallmentModal = ({
         <div className="space-y-3 mb-6">
           <button
             onClick={() => onConfirm('single')}
-            className="w-full text-left px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all flex items-center justify-between group hover:border-indigo-200 dark:hover:border-indigo-800"
+            className="w-full text-left px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all flex items-center justify-between group hover:border-emerald-200 dark:hover:border-emerald-800"
           >
             <div>
               <span className="block font-semibold text-slate-700 dark:text-slate-200 text-sm">
@@ -50,11 +50,11 @@ export const DeleteInstallmentModal = ({
                 {t('transactions.deleteInstallment.singleHint')}
               </span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-500" />
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-500" />
           </button>
           <button
             onClick={() => onConfirm('remaining')}
-            className="w-full text-left px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all flex items-center justify-between group hover:border-indigo-200 dark:hover:border-indigo-800"
+            className="w-full text-left px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all flex items-center justify-between group hover:border-emerald-200 dark:hover:border-emerald-800"
           >
             <div>
               <span className="block font-semibold text-slate-700 dark:text-slate-200 text-sm">
@@ -64,11 +64,11 @@ export const DeleteInstallmentModal = ({
                 {t('transactions.deleteInstallment.futureHint')}
               </span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-500" />
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-500" />
           </button>
           <button
             onClick={() => onConfirm('all')}
-            className="w-full text-left px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all flex items-center justify-between group hover:border-indigo-200 dark:hover:border-indigo-800"
+            className="w-full text-left px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all flex items-center justify-between group hover:border-emerald-200 dark:hover:border-emerald-800"
           >
             <div>
               <span className="block font-semibold text-slate-700 dark:text-slate-200 text-sm">
@@ -78,7 +78,7 @@ export const DeleteInstallmentModal = ({
                 {t('transactions.deleteInstallment.allHint')}
               </span>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-500" />
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-500" />
           </button>
         </div>
         <div className="flex justify-end">

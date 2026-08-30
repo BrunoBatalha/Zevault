@@ -89,7 +89,7 @@ export const ConfirmationModal = ({
             className={`p-3 rounded-full ${
               isDanger
                 ? 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400'
-                : 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400'
+                : 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
             }`}
           >
             <AlertTriangle className="w-6 h-6" />

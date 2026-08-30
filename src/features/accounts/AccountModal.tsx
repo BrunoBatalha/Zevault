@@ -71,7 +71,7 @@ export const AccountModal = ({ isOpen, onClose, accountToEdit = null }: AccountM
               type="text"
               required
               placeholder={t('accounts.modal.namePlaceholder')}
-              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
@@ -84,7 +84,7 @@ export const AccountModal = ({ isOpen, onClose, accountToEdit = null }: AccountM
               type="number"
               step="0.01"
               required
-              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
               value={formData.balance}
               onChange={(e) => setFormData({ ...formData, balance: parseFloat(e.target.value) || 0 })}
             />

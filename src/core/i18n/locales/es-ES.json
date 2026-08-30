@@ -112,7 +112,7 @@
     },
     "features": {
       "title": "¿Por qué elegir una arquitectura Local-First?",
-      "subtitle": "A diferencia de los sistemas tradicionales en la nube, Financier Pro te pone en control. Eliminamos la latencia y el riesgo de filtración de datos de terceros.",
+      "subtitle": "A diferencia de los sistemas tradicionales en la nube, Zevault te pone en control. Eliminamos la latencia y el riesgo de filtración de datos de terceros.",
       "storage": {
         "title": "Almacenamiento Local",
         "description": "Utilizamos la base de datos nativa de tu navegador. Esto significa que el sistema funciona sin conexión y carga instantáneamente, sin esperar APIs lentas."
@@ -128,7 +128,7 @@
     },
     "comparison": {
       "title": "Tus datos financieros no deberían vivir en el ordenador de otra persona.",
-      "description": "La mayoría de las aplicaciones financieras almacenan tus transacciones en servidores compartidos. Financier Pro invierte esta lógica. El navegador es el sistema operativo, y la base de datos es tuya.",
+      "description": "La mayoría de las aplicaciones financieras almacenan tus transacciones en servidores compartidos. Zevault invierte esta lógica. El navegador es el sistema operativo, y la base de datos es tuya.",
       "offlineFirst": "Funciona sin internet (Offline-First)",
       "noFees": "Sin cuotas de servidor",
       "compliant": "Tú controlas la exportación y eliminación de datos locales",
@@ -151,7 +151,7 @@
       "button": "Iniciar Sistema Ahora"
     },
     "footer": {
-      "copyright": "© {{year}} Financier Pro. Local-First Software."
+      "copyright": "© {{year}} Zevault. Local-First Software."
     }
   },
 
@@ -528,7 +528,7 @@
   },
 
   "onboarding": {
-    "welcome": "¡Bienvenido a Financier Pro!",
+    "welcome": "¡Bienvenido a Zevault!",
     "subtitle": "Comencemos configurando tu perfil.",
     "nameLabel": "¿Cómo te gustaría que te llamaran?",
     "namePlaceholder": "Tu nombre",

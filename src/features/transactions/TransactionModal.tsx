@@ -329,7 +329,7 @@ export const TransactionModal = ({
             type="button"
             onClick={onClose}
             aria-label={t('common.close')}
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus-visible:outline-2 focus-visible:outline-indigo-600 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-300"
           >
             <X className="w-6 h-6" />
           </button>
@@ -349,7 +349,7 @@ export const TransactionModal = ({
                     onClick={() => setFormData({ ...formData, type: tp })}
                     className={`flex-1 text-sm py-1.5 rounded-md capitalize font-medium transition-all ${
                       formData.type === tp
-                        ? 'bg-white dark:bg-slate-600 shadow text-indigo-600 dark:text-indigo-400'
+                        ? 'bg-white dark:bg-slate-600 shadow text-emerald-600 dark:text-emerald-400'
                         : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                     }`}
                   >
@@ -365,7 +365,7 @@ export const TransactionModal = ({
               <input
                 type="date"
                 required
-                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               />
@@ -381,7 +381,7 @@ export const TransactionModal = ({
               step="0.01"
               required
               placeholder="0,00"
-              className="w-full text-lg font-semibold rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border placeholder-slate-400 dark:placeholder-slate-500"
+              className="w-full text-lg font-semibold rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border placeholder-slate-400 dark:placeholder-slate-500"
               value={formData.amount}
               onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
             />
@@ -395,14 +395,14 @@ export const TransactionModal = ({
               type="text"
               required
               placeholder={t('transactions.modal.descriptionPlaceholder')}
-              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border placeholder-slate-400 dark:placeholder-slate-500"
+              className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border placeholder-slate-400 dark:placeholder-slate-500"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
           </div>
 
-          <div aria-live="polite" className="flex gap-3 rounded-xl border border-indigo-100 bg-indigo-50 p-4 text-sm leading-6 text-indigo-950 dark:border-indigo-900/60 dark:bg-indigo-950/30 dark:text-indigo-100">
-            <Info aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-indigo-700 dark:text-indigo-300" />
+          <div aria-live="polite" className="flex gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm leading-6 text-emerald-950 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-100">
+            <Info aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700 dark:text-emerald-300" />
             <div>
               <p className="font-semibold">{t('transactions.impact.title')}</p>
               <p>{impactPreview}</p>
@@ -417,7 +417,7 @@ export const TransactionModal = ({
                   {t('transactions.modal.method')}
                 </label>
                 <select
-                  className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                  className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                   value={formData.paymentMethod}
                   onChange={(e) =>
                     setFormData({ ...formData, paymentMethod: e.target.value as 'debit' | 'credit' })
@@ -434,7 +434,7 @@ export const TransactionModal = ({
                     {t('transactions.modal.card')}
                   </label>
                   <select
-                    className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                    className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                     value={formData.creditCardId}
                     onChange={(e) => setFormData({ ...formData, creditCardId: e.target.value })}
                     required
@@ -453,7 +453,7 @@ export const TransactionModal = ({
                     {t('transactions.modal.sourceAccount')}
                   </label>
                   <select
-                    className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                    className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                     value={formData.accountId}
                     onChange={(e) => setFormData({ ...formData, accountId: e.target.value })}
                     required
@@ -478,7 +478,7 @@ export const TransactionModal = ({
               </label>
               <select
                 aria-describedby={hasLastInstallmentAdjustment ? 'last-installment-notice' : undefined}
-                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                 value={formData.installments}
                 onChange={(e) => setFormData({ ...formData, installments: parseInt(e.target.value) })}
               >
@@ -490,7 +490,7 @@ export const TransactionModal = ({
               </select>
               {hasLastInstallmentAdjustment && (
                 <p id="last-installment-notice" className="mt-2 flex items-start gap-1.5 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                  <Info aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-indigo-500 dark:text-indigo-400" />
+                  <Info aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500 dark:text-emerald-400" />
                   {t('transactions.modal.lastInstallmentNotice', {
                     amount: formatCurrency(lastInstallmentAmount),
                     total: formatCurrency(amount),
@@ -508,7 +508,7 @@ export const TransactionModal = ({
                   {t('transactions.modal.sourceAccount')}
                 </label>
                 <select
-                  className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                  className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                   value={formData.accountId}
                   onChange={(e) => setFormData({ ...formData, accountId: e.target.value })}
                   required
@@ -530,7 +530,7 @@ export const TransactionModal = ({
                 {t('transactions.modal.destinationAccount')}
               </label>
               <select
-                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                 value={formData.toAccountId}
                 onChange={(e) => setFormData({ ...formData, toAccountId: e.target.value })}
                 required
@@ -551,7 +551,7 @@ export const TransactionModal = ({
                 {t('transactions.modal.category')}
               </label>
               <select
-                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                 value={formData.categoryId}
                 onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
               >
@@ -573,7 +573,7 @@ export const TransactionModal = ({
                 {t('transactions.modal.costCenter')}
               </label>
               <select
-                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                 value={formData.costCenterId}
                 onChange={(e) => setFormData({ ...formData, costCenterId: e.target.value })}
               >
@@ -593,7 +593,7 @@ export const TransactionModal = ({
                   {t('common.status')}
                 </label>
                 <select
-                  className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-2 px-3 border"
+                  className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
                   value={formData.status}
                   onChange={(e) =>
                     setFormData({ ...formData, status: e.target.value as 'paid' | 'pending' })

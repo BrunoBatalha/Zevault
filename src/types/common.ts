@@ -10,7 +10,7 @@ export type ThemeMode = 'light' | 'dark';
 /**
  * Variantes de botões
  */
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'success';
 
 /**
  * Tamanhos de componentes

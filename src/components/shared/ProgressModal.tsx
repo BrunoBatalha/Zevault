@@ -17,7 +17,7 @@ export const ProgressModal = ({ isOpen, progress, title, message }: ProgressModa
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-6">
-          <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400">
+          <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400">
             <Share2 className="w-5 h-5" />
           </div>
           {title}
@@ -26,13 +26,13 @@ export const ProgressModal = ({ isOpen, progress, title, message }: ProgressModa
         <div className="space-y-6">
           <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-4 overflow-hidden border border-slate-200/50 dark:border-slate-600/50">
             <div 
-              className="bg-indigo-600 h-full transition-all duration-300 ease-out shadow-sm"
+              className="bg-emerald-600 h-full transition-all duration-300 ease-out shadow-sm"
               style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
             />
           </div>
           
           <div className="flex flex-col items-center">
-            <div className="text-4xl font-black text-indigo-600 dark:text-indigo-400 mb-2">
+            <div className="text-4xl font-black text-emerald-600 dark:text-emerald-400 mb-2">
               {Math.round(progress)}%
             </div>
             {message && (
@@ -52,9 +52,9 @@ export const ProgressModal = ({ isOpen, progress, title, message }: ProgressModa
           ) : (
             <div className="text-sm text-slate-400 flex items-center gap-2">
               <div className="flex gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce [animation-delay:-0.3s]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce [animation-delay:-0.15s]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.3s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:-0.15s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce" />
               </div>
               Organizando seus dados...
             </div>

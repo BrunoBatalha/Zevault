@@ -61,7 +61,7 @@ export const CreditCardList = () => {
           <input
             type="text"
             placeholder={t('creditCards.searchPlaceholder')}
-            className="pl-10 pr-4 py-2 w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-slate-400 dark:placeholder-slate-500"
+            className="pl-10 pr-4 py-2 w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 placeholder-slate-400 dark:placeholder-slate-500"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
@@ -75,7 +75,7 @@ export const CreditCardList = () => {
         {filteredCards.map((card) => (
           <Card
             key={card.id}
-            className="p-6 relative group hover:border-indigo-200 dark:hover:border-indigo-800 transition-colors"
+            className="p-6 relative group hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors"
           >
             <div className="absolute top-4 right-4 flex gap-2 z-10">
               <button
@@ -85,7 +85,7 @@ export const CreditCardList = () => {
                   e.stopPropagation();
                   openEdit(card);
                 }}
-                className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-100 dark:border-slate-700"
+                className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-100 dark:border-slate-700"
               >
                 <Pencil className="w-4 h-4" />
               </button>
@@ -103,7 +103,7 @@ export const CreditCardList = () => {
             </div>
 
             <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+              <div className="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
                 <CreditCard className="w-6 h-6" />
               </div>
               <div>

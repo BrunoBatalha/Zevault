@@ -27,32 +27,34 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900 font-sans text-slate-900 dark:text-white overflow-y-auto selection:bg-indigo-100 selection:text-indigo-900">
+    <div className="min-h-screen bg-white dark:bg-slate-900 font-sans text-slate-900 dark:text-white overflow-y-auto selection:bg-emerald-100 selection:text-emerald-950">
       {/* Navbar Semantic */}
       <header className="fixed top-0 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60 z-50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 font-bold text-xl text-slate-900 dark:text-white tracking-tight">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none">
-              <span className="text-white text-xl font-bold">F</span>
-            </div>
-            Financier Pro
+            <img
+              src="/zevault-mark.png"
+              alt=""
+              className="h-11 w-11 rounded-xl object-contain shadow-lg shadow-emerald-200/70 dark:shadow-none"
+            />
+            Zevault
           </div>
           <nav className="hidden md:flex gap-8 text-sm font-medium text-slate-600 dark:text-slate-400">
             <a
               href="#features"
-              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
             >
               {t('landing.nav.features')}
             </a>
             <a
               href="#privacy"
-              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
             >
               {t('landing.nav.privacy')}
             </a>
             <a
               href="#backup"
-              className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
             >
               {t('landing.nav.backup')}
             </a>
@@ -60,7 +62,8 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
           <div className="flex items-center gap-2">
             <Button
               onClick={onGetStarted}
-              className="shadow-lg shadow-indigo-200/50 dark:shadow-none hidden md:inline-flex"
+              variant="success"
+              className="shadow-lg shadow-emerald-200/50 dark:shadow-none hidden md:inline-flex"
             >
               {t('landing.nav.accessSystem')}
             </Button>
@@ -125,14 +128,14 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
       <main className="pt-20">
         {/* Hero Section */}
         <section className="relative py-24 lg:py-32 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-100/50 via-slate-50 to-white dark:from-indigo-900/20 dark:via-slate-900 dark:to-slate-900 -z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-100/60 via-slate-50 to-white dark:from-emerald-950/30 dark:via-slate-900 dark:to-slate-900 -z-10" />
           <div className="max-w-7xl mx-auto px-6 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-indigo-100 dark:border-indigo-900 text-indigo-700 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-8 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-emerald-100 dark:border-emerald-900 text-emerald-800 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider mb-8 shadow-sm">
               <ShieldCheck className="w-4 h-4" /> {t('landing.hero.badge')}
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-8 leading-[1.1]">
               {t('landing.hero.title')} <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 to-teal-600 dark:from-emerald-400 dark:to-teal-400">
                 {t('landing.hero.titleHighlight')}
               </span>
             </h1>
@@ -143,7 +146,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button
                 onClick={onGetStarted}
-                className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-200 dark:shadow-none hover:shadow-2xl hover:shadow-indigo-300 hover:-translate-y-1"
+                className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-emerald-700 rounded-xl hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-200 dark:shadow-none hover:shadow-2xl hover:shadow-emerald-300 hover:-translate-y-1"
               >
                 {t('landing.hero.cta')} <ChevronRight className="w-5 h-5 ml-2" />
               </button>
@@ -167,7 +170,7 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              <article className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-indigo-100 dark:hover:border-indigo-900 hover:shadow-xl hover:shadow-indigo-100/50 dark:hover:shadow-indigo-900/20 transition-all duration-300 group">
+              <article className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-emerald-100 dark:hover:border-emerald-900 hover:shadow-xl hover:shadow-emerald-100/50 dark:hover:shadow-emerald-900/20 transition-all duration-300 group">
                 <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300 border border-slate-100 dark:border-slate-600">
                   <Database className="w-7 h-7" />
                 </div>
@@ -179,8 +182,8 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
                 </p>
               </article>
 
-              <article className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-indigo-100 dark:hover:border-indigo-900 hover:shadow-xl hover:shadow-indigo-100/50 dark:hover:shadow-indigo-900/20 transition-all duration-300 group">
-                <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300 border border-slate-100 dark:border-slate-600">
+              <article className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-emerald-100 dark:hover:border-emerald-900 hover:shadow-xl hover:shadow-emerald-100/50 dark:hover:shadow-emerald-900/20 transition-all duration-300 group">
+                <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-emerald-700 dark:text-emerald-400 mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300 border border-slate-100 dark:border-slate-600">
                   <Lock className="w-7 h-7" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
@@ -191,8 +194,8 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
                 </p>
               </article>
 
-              <article className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-indigo-100 dark:hover:border-indigo-900 hover:shadow-xl hover:shadow-indigo-100/50 dark:hover:shadow-indigo-900/20 transition-all duration-300 group">
-                <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-purple-600 dark:text-purple-400 mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300 border border-slate-100 dark:border-slate-600">
+              <article className="p-8 rounded-3xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-emerald-100 dark:hover:border-emerald-900 hover:shadow-xl hover:shadow-emerald-100/50 dark:hover:shadow-emerald-900/20 transition-all duration-300 group">
+                <div className="w-14 h-14 bg-white dark:bg-slate-700 rounded-2xl flex items-center justify-center text-emerald-700 dark:text-emerald-400 mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300 border border-slate-100 dark:border-slate-600">
                   <Upload className="w-7 h-7" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
@@ -277,18 +280,18 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
         </section>
 
         {/* CTA Footer */}
-        <section className="py-32 bg-indigo-600 text-center px-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500 to-indigo-600"></div>
+        <section className="py-32 bg-emerald-700 text-center px-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-600 to-emerald-800"></div>
           <div className="relative z-10">
             <h2 className="text-4xl font-bold text-white mb-6 tracking-tight">
               {t('landing.cta.title')}
             </h2>
-            <p className="text-indigo-100 mb-10 max-w-xl mx-auto text-lg">
+            <p className="text-emerald-100 mb-10 max-w-xl mx-auto text-lg">
               {t('landing.cta.description')}
             </p>
             <button
               onClick={onGetStarted}
-              className="px-10 py-4 bg-white text-indigo-600 font-bold rounded-xl shadow-2xl hover:bg-indigo-50 transition-all hover:scale-105"
+              className="px-10 py-4 bg-white text-emerald-700 font-bold rounded-xl shadow-2xl hover:bg-emerald-50 transition-all hover:scale-105"
             >
               {t('landing.cta.button')}
             </button>

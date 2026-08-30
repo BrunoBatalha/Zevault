@@ -153,7 +153,7 @@ export const DataShare: React.FC = () => {
   return (
     <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg text-indigo-600 dark:text-indigo-400">
+        <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400">
           <Share2 size={20} />
         </div>
         <div>
@@ -165,7 +165,7 @@ export const DataShare: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-4">
           <h4 className="font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-            <Share2 size={16} className="text-indigo-500" />
+            <Share2 size={16} className="text-emerald-500" />
             Enviar Dados
           </h4>
           <div className="flex gap-2">
@@ -187,7 +187,7 @@ export const DataShare: React.FC = () => {
             className={`w-full py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-all ${
               !code || status === 'sharing'
                 ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-200 dark:shadow-none'
+                : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-md shadow-emerald-200 dark:shadow-none'
             }`}
           >
             {status === 'sharing' ? 'Compartilhando...' : 'Gerar Upload'}
