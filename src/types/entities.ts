@@ -29,6 +29,21 @@ export interface Account {
  */
 export type TransactionStatus = 'paid' | 'pending';
 
+export type RecurrenceFrequency = 'weekly' | 'monthly';
+
+/**
+ * Metadados compartilhados pelas ocorrências de um lançamento recorrente.
+ * Os dias são numéricos para que a regra não dependa do idioma da interface.
+ */
+export interface TransactionRecurrence {
+  seriesId: string;
+  frequency: RecurrenceFrequency;
+  dayOfWeek?: number;
+  dayOfMonth?: number;
+  endDate: string;
+  occurrenceDate: string;
+}
+
 /**
  * Transação financeira (despesa, receita ou transferência)
  */
@@ -49,6 +64,7 @@ export interface Transaction {
   installmentCurrent?: number;
   installmentTotal?: number;
   groupId?: string; // Para agrupar parcelas
+  recurrence?: TransactionRecurrence;
   tags?: string[];
   createdAt?: string;
   updatedAt?: string;

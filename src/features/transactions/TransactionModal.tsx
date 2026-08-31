@@ -8,16 +8,18 @@ import { Button } from '@/components/ui';
 import { db } from '@/core/database';
 import { useData } from '@/core/hooks';
 import { useI18n } from '@/core/i18n';
-import type { Account, Category, CostCenter, CreditCard, Transaction } from '@/types';
+import type { Account, Category, CostCenter, CreditCard, RecurrenceFrequency, Transaction } from '@/types';
 import { Info, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { buildCreditCardPurchaseInstallments, splitAmountInCents, sumAmountsInCents } from './credit-card-purchase';
+import { buildRecurrenceDates, recurrenceForOccurrence, type RecurrenceInput } from './recurrence';
 
 interface TransactionModalProps {
   isOpen: boolean;
   onClose: () => void;
   transactionToEdit?: Transaction | null;
   installmentEditScope?: 'single' | 'all';
+  recurrenceEditScope?: 'single' | 'future';
 }
 
 const installmentDescriptionSuffix = /\s+\(Parc\. \d+\/\d+\)$/;
@@ -35,6 +37,9 @@ interface FormData {
   paymentMethod: 'debit' | 'credit';
   creditCardId: string;
   installments: number;
+  recurrenceFrequency: 'none' | RecurrenceFrequency;
+  recurrenceDay: string;
+  recurrenceEndDate: string;
 }
 
 export const TransactionModal = ({
@@ -42,6 +47,7 @@ export const TransactionModal = ({
   onClose,
   transactionToEdit = null,
   installmentEditScope = 'single',
+  recurrenceEditScope = 'single',
 }: TransactionModalProps) => {
   const { t, formatCurrency } = useI18n();
   const accounts = useData<Account>('accounts');
@@ -63,6 +69,9 @@ export const TransactionModal = ({
     paymentMethod: 'debit',
     creditCardId: '',
     installments: 1,
+    recurrenceFrequency: 'none',
+    recurrenceDay: '',
+    recurrenceEndDate: '',
   });
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -76,6 +85,7 @@ export const TransactionModal = ({
       const purchaseTransactions = isEditingFullPurchase && transactionToEdit.groupId
         ? transactions.filter((transaction) => transaction.groupId === transactionToEdit.groupId)
         : [];
+      const recurrence = recurrenceEditScope === 'future' ? transactionToEdit.recurrence : undefined;
       setFormData({
         date: isEditingFullPurchase ? transactionToEdit.purchaseDate ?? transactionToEdit.date : transactionToEdit.date,
         amount: String(isEditingFullPurchase
@@ -93,6 +103,13 @@ export const TransactionModal = ({
         paymentMethod: transactionToEdit.isCreditCard ? 'credit' : 'debit',
         creditCardId: String(transactionToEdit.creditCardId || ''),
         installments: transactionToEdit.installmentTotal || 1,
+        recurrenceFrequency: recurrence?.frequency ?? 'none',
+        recurrenceDay: recurrence?.frequency === 'weekly'
+          ? String(recurrence.dayOfWeek)
+          : recurrence?.frequency === 'monthly'
+            ? String(recurrence.dayOfMonth)
+            : '',
+        recurrenceEndDate: recurrence?.endDate ?? '',
       });
     } else {
       // Reset defaults
@@ -109,9 +126,12 @@ export const TransactionModal = ({
         paymentMethod: 'debit',
         creditCardId: creditCards[0]?.id ? String(creditCards[0].id) : '',
         installments: 1,
+        recurrenceFrequency: 'none',
+        recurrenceDay: '',
+        recurrenceEndDate: '',
       });
     }
-  }, [transactionToEdit, installmentEditScope, isOpen, accounts, creditCards, transactions]);
+  }, [transactionToEdit, installmentEditScope, recurrenceEditScope, isOpen, accounts, creditCards, transactions]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -160,6 +180,7 @@ export const TransactionModal = ({
   const selectedCard = creditCards.find((card) => card.id === Number(formData.creditCardId));
   const isEditingCreditCardTransaction = Boolean(transactionToEdit?.isCreditCard);
   const isEditingAllInstallments = isEditingCreditCardTransaction && installmentEditScope === 'all';
+  const isEditingFutureRecurrence = Boolean(transactionToEdit?.recurrence && recurrenceEditScope === 'future');
   const selectedInstallmentAmounts = splitAmountInCents(amount, formData.installments);
   const primaryInstallmentAmount = selectedInstallmentAmounts[0] ?? 0;
   const lastInstallmentAmount = selectedInstallmentAmounts.at(-1) ?? 0;
@@ -179,6 +200,64 @@ export const TransactionModal = ({
     };
   });
 
+  const getRecurrenceInput = (): RecurrenceInput | null => {
+    if (formData.recurrenceFrequency === 'none') return null;
+    const day = Number(formData.recurrenceDay);
+    if (!formData.recurrenceEndDate || !Number.isInteger(day)) return null;
+    return formData.recurrenceFrequency === 'weekly'
+      ? {
+          frequency: 'weekly',
+          startDate: formData.date,
+          endDate: formData.recurrenceEndDate,
+          dayOfWeek: day,
+        }
+      : {
+          frequency: 'monthly',
+          startDate: formData.date,
+          endDate: formData.recurrenceEndDate,
+          dayOfMonth: day,
+        };
+  };
+
+  const buildRecurringTransactions = (seriesId: string, recurrenceInput: RecurrenceInput) => {
+    const occurrenceDates = buildRecurrenceDates(recurrenceInput);
+    const categoryId = formData.categoryId ? Number(formData.categoryId) : null;
+    const costCenterId = formData.costCenterId ? Number(formData.costCenterId) : null;
+
+    return occurrenceDates.flatMap((occurrenceDate) => {
+      const recurrence = recurrenceForOccurrence(seriesId, recurrenceInput, occurrenceDate);
+      if (formData.type === 'expense' && formData.paymentMethod === 'credit') {
+        const card = creditCards.find((item) => item.id === Number(formData.creditCardId));
+        if (!card) return [];
+        return buildCreditCardPurchaseInstallments(card, {
+          totalAmount: amount,
+          purchaseDate: occurrenceDate,
+          description: formData.description,
+          installments: formData.installments,
+          creditCardId: card.id!,
+          groupId: crypto.randomUUID(),
+          categoryId,
+          costCenterId,
+          recurrence,
+        });
+      }
+
+      return [{
+        date: occurrenceDate,
+        amount,
+        description: formData.description,
+        type: formData.type,
+        status: 'pending' as const,
+        accountId: Number(formData.accountId),
+        categoryId,
+        costCenterId,
+        toAccountId: formData.type === 'transfer' ? Number(formData.toAccountId) : null,
+        isCreditCard: false,
+        recurrence,
+      }];
+    });
+  };
+
   const impactPreview = (() => {
     if (transactionToEdit) {
       return t('transactions.impact.edit');
@@ -191,7 +270,7 @@ export const TransactionModal = ({
         installments: formData.installments,
       });
     }
-    if (formData.status === 'pending') return t('transactions.impact.pending');
+    if (formData.status === 'pending' || formData.recurrenceFrequency !== 'none') return t('transactions.impact.pending');
     if (!selectedAccount) return t('transactions.impact.selectAccount');
     if (formData.type === 'expense') return t('transactions.impact.expense', { account: selectedAccount.name, amount: formatCurrency(amount) });
     if (formData.type === 'income') return t('transactions.impact.income', { account: selectedAccount.name, amount: formatCurrency(amount) });
@@ -216,9 +295,22 @@ export const TransactionModal = ({
       if (!formData.accountId) return;
     }
 
+    const recurrenceInput = getRecurrenceInput();
+    if (formData.recurrenceFrequency !== 'none' && (!recurrenceInput || buildRecurrenceDates(recurrenceInput).length === 0)) return;
+
     try {
+      if (isEditingFutureRecurrence && transactionToEdit?.recurrence && recurrenceInput) {
+        const transactions = buildRecurringTransactions(transactionToEdit.recurrence.seriesId, recurrenceInput);
+        await db.replaceFutureRecurringTransactions(
+          transactionToEdit.recurrence.seriesId,
+          transactionToEdit.recurrence.occurrenceDate,
+          transactions,
+        );
+      } else if (!transactionToEdit && recurrenceInput) {
+        const transactions = buildRecurringTransactions(crypto.randomUUID(), recurrenceInput);
+        await db.bulkAdd('transactions', transactions);
       // Lógica para Cartão de Crédito
-      if (formData.type === 'expense' && formData.paymentMethod === 'credit' && !transactionToEdit) {
+      } else if (formData.type === 'expense' && formData.paymentMethod === 'credit' && !transactionToEdit) {
         const card = creditCards.find((c) => c.id === Number(formData.creditCardId));
         if (!card) return;
 
@@ -247,6 +339,7 @@ export const TransactionModal = ({
             groupId: transactionToEdit.groupId,
             categoryId: formData.categoryId ? Number(formData.categoryId) : null,
             costCenterId: formData.costCenterId ? Number(formData.costCenterId) : null,
+            recurrence: transactionToEdit.recurrence,
           });
           await db.replaceCreditCardPurchase(transactionToEdit.groupId, installments);
         } else {
@@ -349,8 +442,14 @@ export const TransactionModal = ({
                     onClick={() => setFormData({ ...formData, type: tp })}
                     className={`flex-1 text-sm py-1.5 rounded-md capitalize font-medium transition-all ${
                       formData.type === tp
-                        ? 'bg-white dark:bg-slate-600 shadow text-emerald-600 dark:text-emerald-400'
-                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                        ? 'bg-white dark:bg-slate-600 shadow'
+                        : ''
+                    } ${
+                      tp === 'expense'
+                        ? 'text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300'
+                        : tp === 'income'
+                          ? 'text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300'
+                          : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                     }`}
                   >
                     {t(`transactions.types.${tp}`)}
@@ -587,7 +686,7 @@ export const TransactionModal = ({
             </div>
 
             {/* Status só aparece se não for cartão de crédito */}
-            {formData.paymentMethod !== 'credit' && (
+            {formData.paymentMethod !== 'credit' && formData.recurrenceFrequency === 'none' && (
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                   {t('common.status')}
@@ -605,6 +704,71 @@ export const TransactionModal = ({
               </div>
             )}
           </div>
+
+          {(!transactionToEdit || isEditingFutureRecurrence) && (
+            <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                {t('transactions.modal.recurrence.label')}
+              </label>
+              <select
+                className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
+                value={formData.recurrenceFrequency}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  recurrenceFrequency: e.target.value as FormData['recurrenceFrequency'],
+                  recurrenceDay: '',
+                  recurrenceEndDate: '',
+                })}
+              >
+                <option value="none">{t('transactions.modal.recurrence.none')}</option>
+                <option value="weekly">{t('transactions.modal.recurrence.weekly')}</option>
+                <option value="monthly">{t('transactions.modal.recurrence.monthly')}</option>
+              </select>
+
+              {formData.recurrenceFrequency !== 'none' && (
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      {t(`transactions.modal.recurrence.${formData.recurrenceFrequency === 'weekly' ? 'weekday' : 'monthDay'}`)}
+                    </label>
+                    <select
+                      required
+                      className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
+                      value={formData.recurrenceDay}
+                      onChange={(e) => setFormData({ ...formData, recurrenceDay: e.target.value })}
+                    >
+                      <option value="">{t('common.select')}</option>
+                      {formData.recurrenceFrequency === 'weekly'
+                        ? Array.from({ length: 7 }, (_, day) => (
+                            <option key={day} value={day}>{t(`transactions.modal.recurrence.weekdays.${day}`)}</option>
+                          ))
+                        : Array.from({ length: 31 }, (_, index) => (
+                            <option key={index + 1} value={index + 1}>{index + 1}</option>
+                          ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      {t('transactions.modal.recurrence.endDate')}
+                    </label>
+                    <input
+                      type="date"
+                      required
+                      min={formData.date}
+                      className="w-full rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"
+                      value={formData.recurrenceEndDate}
+                      onChange={(e) => setFormData({ ...formData, recurrenceEndDate: e.target.value })}
+                    />
+                  </div>
+                </div>
+              )}
+              {formData.recurrenceFrequency !== 'none' && (
+                <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                  {t('transactions.modal.recurrence.pendingNotice')}
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="pt-4 flex justify-end gap-3">
             <Button variant="secondary" onClick={onClose} type="button">

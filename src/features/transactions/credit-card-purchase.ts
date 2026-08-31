@@ -1,4 +1,4 @@
-import type { CreditCard, Transaction } from '@/types';
+import type { CreditCard, Transaction, TransactionRecurrence } from '@/types';
 
 export interface CreditCardPurchaseInput {
   totalAmount: number;
@@ -9,6 +9,7 @@ export interface CreditCardPurchaseInput {
   groupId: string;
   categoryId: number | null;
   costCenterId: number | null;
+  recurrence?: TransactionRecurrence;
 }
 
 const formatLocalDate = (date: Date) => {
@@ -69,5 +70,6 @@ export const buildCreditCardPurchaseInstallments = (
     purchaseDate: input.purchaseDate,
     categoryId: input.categoryId,
     costCenterId: input.costCenterId,
+    recurrence: input.recurrence,
   }));
 };

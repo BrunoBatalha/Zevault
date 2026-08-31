@@ -5,7 +5,7 @@ import { TransactionModal } from './TransactionModal'
 
 vi.mock('@/core/hooks', () => ({ useData: vi.fn() }))
 vi.mock('@/core/database', () => ({
-  db: { add: vi.fn(), bulkAdd: vi.fn(), update: vi.fn(), get: vi.fn(), getAll: vi.fn(), replaceCreditCardPurchase: vi.fn(), updateCreditCardTransaction: vi.fn() },
+  db: { add: vi.fn(), bulkAdd: vi.fn(), update: vi.fn(), get: vi.fn(), getAll: vi.fn(), replaceCreditCardPurchase: vi.fn(), updateCreditCardTransaction: vi.fn(), replaceFutureRecurringTransactions: vi.fn() },
 }))
 vi.mock('@/core/i18n', () => ({
   useI18n: () => ({
@@ -39,9 +39,21 @@ beforeEach(() => {
   vi.mocked(db.getAll).mockResolvedValue([] as any)
   vi.mocked(db.replaceCreditCardPurchase).mockResolvedValue(undefined as any)
   vi.mocked(db.updateCreditCardTransaction).mockResolvedValue(undefined as any)
+  vi.mocked(db.replaceFutureRecurringTransactions).mockResolvedValue(undefined as any)
 })
 
 describe('TransactionModal — despesa debito', () => {
+  it('mantém despesa vermelha e receita verde sem depender do texto traduzido', async () => {
+    render(<TransactionModal isOpen onClose={vi.fn()} />)
+    const expense = screen.getByText('transactions.types.expense')
+    const income = screen.getByText('transactions.types.income')
+
+    expect(expense).toHaveClass('text-rose-600')
+    expect(income).toHaveClass('text-emerald-600')
+    await userEvent.click(income)
+    expect(income).toHaveClass('text-emerald-600')
+  })
+
   it('antecipa a redução no saldo antes de salvar', async () => {
     render(<TransactionModal isOpen onClose={vi.fn()} />)
 
@@ -264,5 +276,29 @@ describe('TransactionModal — modo edicao', () => {
     render(<TransactionModal isOpen onClose={vi.fn()} transactionToEdit={installments[0] as any} installmentEditScope="all" />)
 
     expect(screen.getByDisplayValue('100')).toBeInTheDocument()
+  })
+
+  it('cria imediatamente as ocorrências recorrentes como pendentes sem alterar o saldo', async () => {
+    const { container } = render(<TransactionModal isOpen onClose={vi.fn()} />)
+    const user = userEvent.setup()
+    const dateInputs = container.querySelectorAll<HTMLInputElement>('input[type="date"]')
+    fireEvent.change(dateInputs[0], { target: { value: '2026-01-01' } })
+    await user.type(screen.getByPlaceholderText('0,00'), '200')
+    await user.type(screen.getByPlaceholderText('transactions.modal.descriptionPlaceholder'), 'Academia')
+
+    const recurrenceLabel = screen.getByText('transactions.modal.recurrence.label')
+    const recurrenceSelect = recurrenceLabel.parentElement!.querySelector('select')!
+    await user.selectOptions(recurrenceSelect, 'weekly')
+    const weekdayLabel = screen.getByText('transactions.modal.recurrence.weekday')
+    await user.selectOptions(weekdayLabel.parentElement!.querySelector('select')!, '1')
+    const recurrenceDates = container.querySelectorAll<HTMLInputElement>('input[type="date"]')
+    fireEvent.change(recurrenceDates[1], { target: { value: '2026-01-12' } })
+
+    await user.click(screen.getByText('transactions.modal.save'))
+    await waitFor(() => expect(db.bulkAdd).toHaveBeenCalledWith('transactions', [
+      expect.objectContaining({ date: '2026-01-05', status: 'pending', amount: 200, recurrence: expect.objectContaining({ frequency: 'weekly' }) }),
+      expect.objectContaining({ date: '2026-01-12', status: 'pending', amount: 200 }),
+    ]))
+    expect(db.update).not.toHaveBeenCalled()
   })
 })

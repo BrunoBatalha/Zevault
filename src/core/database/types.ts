@@ -25,6 +25,8 @@ export interface DatabaseOperations {
   changeCreditCardTransactionStatus(transactionId: number, newStatus: 'paid' | 'pending', cardAccountId?: number): Promise<void>;
   deleteCreditCardTransactions(transactionIds: number[]): Promise<void>;
   updateCreditCardTransaction(transactionId: number, updates: Partial<Transaction>, cardAccountId: number): Promise<void>;
+  replaceFutureRecurringTransactions(seriesId: string, fromOccurrenceDate: string, items: Array<Omit<Transaction, 'id'>>): Promise<void>;
+  deleteFutureRecurringTransactions(seriesId: string, fromOccurrenceDate: string): Promise<void>;
   replaceAllData(data: ImportData): Promise<void>;
   deleteDB(): Promise<void>;
 }

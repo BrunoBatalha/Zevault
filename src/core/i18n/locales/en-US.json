@@ -362,6 +362,22 @@
       "category": "Category",
       "costCenter": "Cost Center",
       "general": "General",
+      "recurrence": {
+        "label": "Repeat",
+        "none": "Do not repeat",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "weekday": "Day of the week",
+        "monthDay": "Day of the month",
+        "endDate": "Repeat until",
+        "pendingNotice": "All occurrences will be created now as pending and will change a balance only when marked as paid.",
+        "weekdays": { "0": "Sunday", "1": "Monday", "2": "Tuesday", "3": "Wednesday", "4": "Thursday", "5": "Friday", "6": "Saturday" },
+        "actionTitle": "Recurring transaction",
+        "editMessage": "Do you want to edit only this transaction or this occurrence and future ones?",
+        "deleteMessage": "Do you want to delete only this transaction or this occurrence and future ones? Paid transactions will be kept.",
+        "onlyThis": "Only this one",
+        "thisAndFuture": "This and future"
+      },
       "save": "Save Transaction"
     },
     "impact": {

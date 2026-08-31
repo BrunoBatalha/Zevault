@@ -169,6 +169,34 @@ describe('NativeDB — compra parcelada', () => {
   })
 })
 
+describe('NativeDB — recorrências', () => {
+  const recurrence = (occurrenceDate: string) => ({
+    seriesId: 'series-1' as const,
+    frequency: 'weekly' as const,
+    dayOfWeek: 1,
+    endDate: '2026-02-01',
+    occurrenceDate,
+  });
+
+  it('substitui apenas ocorrências futuras pendentes e preserva uma ocorrência paga', async () => {
+    await db.bulkAdd<Transaction>('transactions', [
+      { type: 'expense', amount: 10, description: 'Pago', date: '2026-01-05', status: 'paid', accountId: 1, recurrence: recurrence('2026-01-05') },
+      { type: 'expense', amount: 10, description: 'Pendente', date: '2026-01-12', status: 'pending', accountId: 1, recurrence: recurrence('2026-01-12') },
+    ])
+
+    await db.replaceFutureRecurringTransactions('series-1', '2026-01-05', [
+      { type: 'expense', amount: 20, description: 'Novo pago protegido', date: '2026-01-05', status: 'pending', accountId: 1, recurrence: recurrence('2026-01-05') },
+      { type: 'expense', amount: 20, description: 'Novo pendente', date: '2026-01-12', status: 'pending', accountId: 1, recurrence: recurrence('2026-01-12') },
+    ])
+
+    expect(await db.getAll<Transaction>('transactions')).toEqual(expect.arrayContaining([
+      expect.objectContaining({ description: 'Pago', status: 'paid' }),
+      expect.objectContaining({ description: 'Novo pendente', amount: 20, status: 'pending' }),
+    ]))
+    expect(await db.getAll<Transaction>('transactions')).toHaveLength(2)
+  })
+})
+
 describe('NativeDB migration v3', () => {
   it('remove o tipo da conta e vincula cartao legado quando existe uma unica conta', async () => {
     const oldDatabase = await new Promise<IDBDatabase>((resolve, reject) => {

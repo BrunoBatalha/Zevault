@@ -14,6 +14,7 @@ vi.mock('@/core/database', () => ({
     getAll: vi.fn(),
     changeCreditCardTransactionStatus: vi.fn(),
     deleteCreditCardTransactions: vi.fn(),
+    deleteFutureRecurringTransactions: vi.fn(),
   },
 }))
 vi.mock('@/core/i18n', () => ({
@@ -51,6 +52,7 @@ beforeEach(() => {
   vi.mocked(db.delete).mockResolvedValue(undefined as any)
   vi.mocked(db.changeCreditCardTransactionStatus).mockResolvedValue(undefined as any)
   vi.mocked(db.deleteCreditCardTransactions).mockResolvedValue(undefined as any)
+  vi.mocked(db.deleteFutureRecurringTransactions).mockResolvedValue(undefined as any)
   vi.mocked(db.getAll).mockResolvedValue(mockTransactions as any)
 })
 
@@ -95,6 +97,26 @@ describe('TransactionList — filtragem', () => {
 })
 
 describe('TransactionList — delete', () => {
+  it('oferece excluir somente a ocorrência ou a série futura', async () => {
+    const recurring = {
+      ...mockTransactions[2],
+      recurrence: { seriesId: 'series-1', frequency: 'weekly' as const, dayOfWeek: 1, endDate: '2026-12-31', occurrenceDate: '2026-01-20' },
+    }
+    vi.mocked(useData).mockImplementation((store) => {
+      if (store === 'transactions') return [recurring] as any
+      return EMPTY as any
+    })
+    render(<TransactionList />)
+
+    await userEvent.click(screen.getByRole('button', { name: 'common.actions' }))
+    await userEvent.click(screen.getByText('common.delete'))
+    expect(screen.getByText('transactions.modal.recurrence.deleteMessage')).toBeInTheDocument()
+    await userEvent.click(screen.getByText('transactions.modal.recurrence.thisAndFuture'))
+
+    await waitFor(() => expect(db.deleteFutureRecurringTransactions).toHaveBeenCalledWith('series-1', '2026-01-20'))
+    expect(db.delete).not.toHaveBeenCalled()
+  })
+
   it('chama db.delete ao confirmar exclusao simples', async () => {
     // Usar apenas Mercado para simplificar localização do botão
     vi.mocked(useData).mockImplementation((store) => {

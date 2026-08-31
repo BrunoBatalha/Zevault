@@ -362,6 +362,22 @@
       "category": "Categoría",
       "costCenter": "Centro de Coste",
       "general": "General",
+      "recurrence": {
+        "label": "Repetición",
+        "none": "No repetir",
+        "weekly": "Semanal",
+        "monthly": "Mensual",
+        "weekday": "Día de la semana",
+        "monthDay": "Día del mes",
+        "endDate": "Repetir hasta",
+        "pendingNotice": "Todas las ocurrencias se crearán ahora como pendientes y solo cambiarán el saldo al marcarlas como pagadas.",
+        "weekdays": { "0": "Domingo", "1": "Lunes", "2": "Martes", "3": "Miércoles", "4": "Jueves", "5": "Viernes", "6": "Sábado" },
+        "actionTitle": "Movimiento recurrente",
+        "editMessage": "¿Quieres editar solo este movimiento o esta ocurrencia y las siguientes?",
+        "deleteMessage": "¿Quieres eliminar solo este movimiento o esta ocurrencia y las siguientes? Se conservarán los movimientos pagados.",
+        "onlyThis": "Solo este",
+        "thisAndFuture": "Este y siguientes"
+      },
       "save": "Guardar Transacción"
     },
     "impact": {

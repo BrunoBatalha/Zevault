@@ -60,6 +60,8 @@ export const TransactionList = () => {
   const [showInstallmentEditModal, setShowInstallmentEditModal] = useState(false);
   const [installmentToEdit, setInstallmentToEdit] = useState<Transaction | null>(null);
   const [installmentEditScope, setInstallmentEditScope] = useState<'single' | 'all'>('single');
+  const [recurrenceEditScope, setRecurrenceEditScope] = useState<'single' | 'future'>('single');
+  const [recurrenceAction, setRecurrenceAction] = useState<{ transaction: Transaction; type: 'edit' | 'delete' } | null>(null);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [menuPosition, setMenuPosition] = useState<MenuPosition | null>(null);
   const [transactionForStatusChange, setTransactionForStatusChange] = useState<Transaction | null>(null);
@@ -105,7 +107,7 @@ export const TransactionList = () => {
     };
   }, [transactions, selectedMonth]);
 
-  const handleEdit = (transaction: Transaction) => {
+  const editOnlyThis = (transaction: Transaction) => {
     if (transaction.groupId) {
       setInstallmentToEdit(transaction);
       setShowInstallmentEditModal(true);
@@ -114,11 +116,12 @@ export const TransactionList = () => {
     }
     setTransactionToEdit(transaction);
     setInstallmentEditScope('single');
+    setRecurrenceEditScope('single');
     setShowModal(true);
     setOpenMenuId(null);
   };
 
-  const handleDelete = (transaction: Transaction) => {
+  const deleteOnlyThis = (transaction: Transaction) => {
     if (transaction.groupId) {
       setInstallmentToDelete(transaction);
       setShowInstallmentModal(true);
@@ -184,6 +187,52 @@ export const TransactionList = () => {
   const requestStatusChange = (transaction: Transaction) => {
     setTransactionForStatusChange(transaction);
     setOpenMenuId(null);
+  };
+
+  const handleEdit = (transaction: Transaction) => {
+    if (transaction.recurrence) {
+      setRecurrenceAction({ transaction, type: 'edit' });
+      setOpenMenuId(null);
+      return;
+    }
+    editOnlyThis(transaction);
+  };
+
+  const handleDelete = (transaction: Transaction) => {
+    if (transaction.recurrence) {
+      setRecurrenceAction({ transaction, type: 'delete' });
+      setOpenMenuId(null);
+      return;
+    }
+    deleteOnlyThis(transaction);
+  };
+
+  const resolveRecurrenceAction = async (scope: 'single' | 'future') => {
+    if (!recurrenceAction) return;
+    const { transaction, type } = recurrenceAction;
+    setRecurrenceAction(null);
+    if (scope === 'single') {
+      if (type === 'edit') editOnlyThis(transaction);
+      else deleteOnlyThis(transaction);
+      return;
+    }
+
+    if (type === 'edit') {
+      setTransactionToEdit(transaction);
+      setInstallmentEditScope('single');
+      setRecurrenceEditScope('future');
+      setShowModal(true);
+      return;
+    }
+
+    try {
+      await db.deleteFutureRecurringTransactions(
+        transaction.recurrence!.seriesId,
+        transaction.recurrence!.occurrenceDate,
+      );
+    } catch (err) {
+      console.error('Erro ao excluir recorrência:', err);
+    }
   };
 
   const confirmInstallmentEdit = (scope: 'single' | 'all') => {
@@ -677,10 +726,36 @@ export const TransactionList = () => {
         onClose={() => {
           setShowModal(false);
           setTransactionToEdit(null);
+          setRecurrenceEditScope('single');
         }}
         transactionToEdit={transactionToEdit}
         installmentEditScope={installmentEditScope}
+        recurrenceEditScope={recurrenceEditScope}
       />
+
+      {recurrenceAction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" role="dialog" aria-modal="true" aria-labelledby="recurrence-action-title">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl dark:bg-slate-800">
+            <h3 id="recurrence-action-title" className="text-lg font-bold text-slate-800 dark:text-white">
+              {t('transactions.modal.recurrence.actionTitle')}
+            </h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+              {t(`transactions.modal.recurrence.${recurrenceAction.type === 'edit' ? 'editMessage' : 'deleteMessage'}`)}
+            </p>
+            <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button variant="secondary" type="button" onClick={() => setRecurrenceAction(null)}>
+                {t('common.cancel')}
+              </Button>
+              <Button variant="secondary" type="button" onClick={() => void resolveRecurrenceAction('single')}>
+                {t('transactions.modal.recurrence.onlyThis')}
+              </Button>
+              <Button type="button" onClick={() => void resolveRecurrenceAction('future')}>
+                {t('transactions.modal.recurrence.thisAndFuture')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ConfirmationModal
         isOpen={showDeleteModal}

@@ -78,6 +78,19 @@ export const prepareImportedData = (input: unknown): ImportData => {
     const toAccountId = typeof transaction.toAccountId === 'number' ? transaction.toAccountId : null;
     if (accountId !== null && !accountIds.has(accountId)) throw new Error('Invalid transaction account');
     if (toAccountId !== null && !accountIds.has(toAccountId)) throw new Error('Invalid transfer account');
+    if (transaction.recurrence !== undefined) {
+      const recurrence = asRecord(transaction.recurrence, 'transaction recurrence');
+      const isWeekly = recurrence.frequency === 'weekly';
+      const isMonthly = recurrence.frequency === 'monthly';
+      if (
+        typeof recurrence.seriesId !== 'string'
+        || (!isWeekly && !isMonthly)
+        || typeof recurrence.endDate !== 'string'
+        || typeof recurrence.occurrenceDate !== 'string'
+        || (isWeekly && (!Number.isInteger(recurrence.dayOfWeek) || Number(recurrence.dayOfWeek) < 0 || Number(recurrence.dayOfWeek) > 6))
+        || (isMonthly && (!Number.isInteger(recurrence.dayOfMonth) || Number(recurrence.dayOfMonth) < 1 || Number(recurrence.dayOfMonth) > 31))
+      ) throw new Error('Invalid transaction recurrence');
+    }
     return transaction as unknown as Transaction;
   });
   const rawCostCenters = isArray(data.costCenters) ? data.costCenters : [];

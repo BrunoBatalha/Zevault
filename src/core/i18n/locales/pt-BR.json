@@ -362,6 +362,22 @@
       "category": "Categoria",
       "costCenter": "Centro de Custo",
       "general": "Geral",
+      "recurrence": {
+        "label": "Repetição",
+        "none": "Não repetir",
+        "weekly": "Semanal",
+        "monthly": "Mensal",
+        "weekday": "Dia da semana",
+        "monthDay": "Dia do mês",
+        "endDate": "Repetir até",
+        "pendingNotice": "Todas as ocorrências serão criadas agora como pendentes e só alterarão o saldo quando forem marcadas como pagas.",
+        "weekdays": { "0": "Domingo", "1": "Segunda-feira", "2": "Terça-feira", "3": "Quarta-feira", "4": "Quinta-feira", "5": "Sexta-feira", "6": "Sábado" },
+        "actionTitle": "Lançamento recorrente",
+        "editMessage": "Deseja editar apenas este lançamento ou esta ocorrência e as próximas?",
+        "deleteMessage": "Deseja excluir apenas este lançamento ou esta ocorrência e as próximas? Lançamentos pagos serão preservados.",
+        "onlyThis": "Somente este",
+        "thisAndFuture": "Este e próximos"
+      },
       "save": "Salvar Lançamento"
     },
     "impact": {

@@ -373,6 +373,57 @@ class NativeDB {
   }
 
   /**
+   * Recria a parte futura e ainda pendente de uma série. Ocorrências que já
+   * possuem qualquer item pago ficam intactas para preservar o histórico.
+   */
+  async replaceFutureRecurringTransactions(
+    seriesId: string,
+    fromOccurrenceDate: string,
+    items: Array<Omit<Transaction, 'id'>>,
+  ): Promise<void> {
+    await this.connect();
+    return new Promise((resolve, reject) => {
+      const tx = this.db!.transaction('transactions', 'readwrite');
+      const store = tx.objectStore('transactions');
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        const existing = request.result as Transaction[];
+        const inScope = existing.filter((transaction) => transaction.recurrence?.seriesId === seriesId);
+        const lockedOccurrenceDates = new Set(
+          inScope
+            .filter((transaction) => transaction.status === 'paid')
+            .map((transaction) => transaction.recurrence!.occurrenceDate),
+        );
+        inScope
+          .filter((transaction) => {
+            const occurrenceDate = transaction.recurrence!.occurrenceDate;
+            return occurrenceDate >= fromOccurrenceDate
+              && !lockedOccurrenceDates.has(occurrenceDate)
+              && transaction.id !== undefined;
+          })
+          .forEach((transaction) => store.delete(transaction.id!));
+
+        items
+          .filter((item) => !lockedOccurrenceDates.has(item.recurrence!.occurrenceDate))
+          .forEach((item) => store.add(item));
+      };
+      request.onerror = () => reject(request.error);
+      tx.oncomplete = () => {
+        this.notify();
+        resolve();
+      };
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error ?? new Error('Recurring transaction replacement aborted'));
+    });
+  }
+
+  /** Exclui apenas ocorrências futuras pendentes, preservando as já pagas. */
+  async deleteFutureRecurringTransactions(seriesId: string, fromOccurrenceDate: string): Promise<void> {
+    await this.replaceFutureRecurringTransactions(seriesId, fromOccurrenceDate, []);
+  }
+
+  /**
    * Atualiza um registro existente
    */
   async update<T>(storeName: StoreName, id: number, updates: Partial<T>): Promise<void> {
