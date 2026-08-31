@@ -60,3 +60,8 @@ Mantenha a regra de negócio próxima à feature. Extraia para `core` apenas có
 2. Rode `npm run lint` e `npm run build` para mudanças TypeScript/React mais amplas.
 3. Teste manualmente os fluxos que alteram saldo, parcelas, importação ou exclusão.
 4. Não altere dados do IndexedDB do usuário durante desenvolvimento ou testes manuais sem autorização explícita.
+
+## Versionamento e pushes
+
+- Antes de cada `git push`, incremente a versão exibida em `src/core/utils/constants.ts` e mantenha-a idêntica à de `package.json`, no formato `vX.Y.Z` (SemVer).
+- Atualize `X` para mudanças incompatíveis, `Y` para novas funcionalidades compatíveis e `Z` para correções compatíveis. Cada push deve aumentar exatamente um desses componentes.

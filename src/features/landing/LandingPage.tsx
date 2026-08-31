@@ -5,6 +5,7 @@
 
 import { Button } from '@/components/ui';
 import { useI18n } from '@/core/i18n';
+import { APP_VERSION } from '@/core/utils/constants';
 import {
     Check,
     ChevronRight,
@@ -143,16 +144,19 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
               className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: t('landing.hero.description') }}
             />
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button
-                onClick={onGetStarted}
-                className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-emerald-700 rounded-xl hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-200 dark:shadow-none hover:shadow-2xl hover:shadow-emerald-300 hover:-translate-y-1"
-              >
-                {t('landing.hero.cta')} <ChevronRight className="w-5 h-5 ml-2" />
-              </button>
-              <button className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all shadow-sm hover:shadow-md">
-                {t('landing.hero.docs')}
-              </button>
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <button
+                  onClick={onGetStarted}
+                  className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-emerald-700 rounded-xl hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-200 dark:shadow-none hover:shadow-2xl hover:shadow-emerald-300 hover:-translate-y-1"
+                >
+                  {t('landing.hero.cta')} <ChevronRight className="w-5 h-5 ml-2" />
+                </button>
+                <button className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all shadow-sm hover:shadow-md">
+                  {t('landing.hero.docs')}
+                </button>
+              </div>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">v{APP_VERSION}</p>
             </div>
           </div>
         </section>

@@ -9,6 +9,11 @@ export const DB_NAME = 'FinancierProDB_Native';
 export const DB_VERSION = 3;
 
 /**
+ * Versão exibida do aplicativo. Mantenha sincronizada com package.json.
+ */
+export const APP_VERSION = '0.0.0';
+
+/**
  * Nomes dos stores do IndexedDB
  */
 export const STORE_NAMES = {
