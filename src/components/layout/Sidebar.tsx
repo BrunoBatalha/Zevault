@@ -1,5 +1,6 @@
 import { useTheme } from '@/core/hooks';
 import { useI18n } from '@/core/i18n';
+import { APP_VERSION } from '@/core/utils/constants';
 import { ArrowLeftRight, ChevronLeft, ChevronRight, CreditCard, LayoutDashboard, LogOut, MoreHorizontal, Moon, Settings, Sun, Tags, Wallet, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -51,6 +52,7 @@ export const Sidebar = ({ userName, isCollapsed, onToggleCollapse, onLogout }: S
           <div className="space-y-2 border-t border-slate-200 p-4 dark:border-slate-700">
             <button type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={t('app.toggleTheme')} className={`flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-slate-400 dark:hover:bg-slate-700 ${isCollapsed ? 'justify-center' : ''}`}>{theme === 'dark' ? <Sun aria-hidden="true" className="h-5 w-5" /> : <Moon aria-hidden="true" className="h-5 w-5" />}{isCollapsed ? null : <span>{theme === 'dark' ? t('settings.lightMode') : t('settings.darkMode')}</span>}</button>
             <button type="button" onClick={onLogout} className={`flex min-h-11 w-full items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-rose-700 hover:bg-rose-50 focus-visible:outline-2 focus-visible:outline-rose-600 dark:text-rose-300 dark:hover:bg-rose-950/30 ${isCollapsed ? 'justify-center' : ''}`}><LogOut aria-hidden="true" className="h-5 w-5" />{isCollapsed ? null : <span>{t('common.logout')}</span>}</button>
+            <p className="pt-1 text-center text-xs font-medium text-slate-400 dark:text-slate-500">v{APP_VERSION}</p>
           </div>
         </div>
       </aside>

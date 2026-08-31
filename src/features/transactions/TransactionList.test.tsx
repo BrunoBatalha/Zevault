@@ -27,10 +27,11 @@ vi.mock('@/core/i18n', () => ({
 import { useData } from '@/core/hooks'
 import { db } from '@/core/database'
 
+const currentMonth = new Date().toISOString().substring(0, 7)
 const mockTransactions = [
-  { id: 1, type: 'expense', amount: 100, description: 'Mercado', date: '2026-01-15', status: 'paid', accountId: 1 },
-  { id: 2, type: 'income', amount: 500, description: 'Salário', date: '2026-01-10', status: 'paid', accountId: 1 },
-  { id: 3, type: 'expense', amount: 200, description: 'Farmácia', date: '2026-01-20', status: 'pending', accountId: 1 },
+  { id: 1, type: 'expense', amount: 100, description: 'Mercado', date: `${currentMonth}-15`, status: 'paid', accountId: 1 },
+  { id: 2, type: 'income', amount: 500, description: 'Salário', date: `${currentMonth}-10`, status: 'paid', accountId: 1 },
+  { id: 3, type: 'expense', amount: 200, description: 'Farmácia', date: `${currentMonth}-20`, status: 'pending', accountId: 1 },
 ]
 
 // Referências estáveis para evitar re-renders infinitos no useEffect de componentes internos
@@ -57,11 +58,12 @@ beforeEach(() => {
 })
 
 describe('TransactionList — filtragem', () => {
-  it('exibe todas as transacoes por default', async () => {
+  it('abre na visão mensal por padrão', async () => {
     render(<TransactionList />)
     await waitFor(() => {
       expect(screen.getByText('Mercado')).toBeInTheDocument()
       expect(screen.getByText('Salário')).toBeInTheDocument()
+      expect(screen.getByText('+R$ 500')).toBeInTheDocument()
     })
   })
 
@@ -126,9 +128,7 @@ describe('TransactionList — delete', () => {
     render(<TransactionList />)
     await waitFor(() => expect(screen.getByText('Mercado')).toBeInTheDocument())
 
-    // Botões: [0] new, [1] list-view, [2] monthly-view, [3] MoreVertical de Mercado
-    const allButtons = screen.getAllByRole('button')
-    await userEvent.click(allButtons[3])
+    await userEvent.click(screen.getByRole('button', { name: 'common.actions' }))
     await userEvent.click(screen.getByText('common.delete'))
     await userEvent.click(screen.getByText('common.confirm'))
 
@@ -143,8 +143,7 @@ describe('TransactionList — delete', () => {
     render(<TransactionList />)
     await waitFor(() => expect(screen.getByText('Mercado')).toBeInTheDocument())
 
-    const allButtons = screen.getAllByRole('button')
-    await userEvent.click(allButtons[3])
+    await userEvent.click(screen.getByRole('button', { name: 'common.actions' }))
     await userEvent.click(screen.getByText('common.delete'))
     await userEvent.click(screen.getByText('common.confirm'))
 
@@ -160,7 +159,7 @@ describe('TransactionList — edição de parcelas', () => {
       type: 'expense' as const,
       amount: 100,
       description: 'Notebook (Parc. 1/2)',
-      date: '2026-01-20',
+      date: `${currentMonth}-20`,
       status: 'pending' as const,
       isCreditCard: true,
       creditCardId: 1,
@@ -177,7 +176,7 @@ describe('TransactionList — edição de parcelas', () => {
     render(<TransactionList />)
     await waitFor(() => expect(screen.getByText('Notebook (Parc. 1/2)')).toBeInTheDocument())
 
-    await userEvent.click(screen.getAllByRole('button')[3])
+    await userEvent.click(screen.getByRole('button', { name: 'common.actions' }))
     await userEvent.click(screen.getByText('common.edit'))
 
     expect(screen.getByText('transactions.editInstallment.single')).toBeInTheDocument()
@@ -186,8 +185,8 @@ describe('TransactionList — edição de parcelas', () => {
 
   it('exclui a compra completa, inclusive parcelas já pagas', async () => {
     const installments = [
-      { id: 10, type: 'expense' as const, amount: 100, description: 'Notebook (Parc. 1/2)', date: '2026-01-20', status: 'paid', isCreditCard: true, creditCardId: 1, installmentCurrent: 1, installmentTotal: 2, groupId: 'purchase-1' },
-      { id: 11, type: 'expense' as const, amount: 100, description: 'Notebook (Parc. 2/2)', date: '2026-02-20', status: 'pending', isCreditCard: true, creditCardId: 1, installmentCurrent: 2, installmentTotal: 2, groupId: 'purchase-1' },
+      { id: 10, type: 'expense' as const, amount: 100, description: 'Notebook (Parc. 1/2)', date: `${currentMonth}-20`, status: 'paid', isCreditCard: true, creditCardId: 1, installmentCurrent: 1, installmentTotal: 2, groupId: 'purchase-1' },
+      { id: 11, type: 'expense' as const, amount: 100, description: 'Notebook (Parc. 2/2)', date: `${currentMonth}-21`, status: 'pending', isCreditCard: true, creditCardId: 1, installmentCurrent: 2, installmentTotal: 2, groupId: 'purchase-1' },
     ]
     const visibleTransactions = [installments[0]]
     vi.mocked(useData).mockImplementation((store) => {
@@ -199,7 +198,7 @@ describe('TransactionList — edição de parcelas', () => {
     render(<TransactionList />)
     await waitFor(() => expect(screen.getByText('Notebook (Parc. 1/2)')).toBeInTheDocument())
 
-    await userEvent.click(screen.getAllByRole('button')[3])
+    await userEvent.click(screen.getByRole('button', { name: 'common.actions' }))
     await userEvent.click(screen.getByText('common.delete'))
     await userEvent.click(screen.getByText('transactions.deleteInstallment.all'))
 
@@ -224,7 +223,7 @@ describe('TransactionList — edição de parcelas', () => {
 describe('TransactionList — mudança de status', () => {
   it('debita a conta vinculada ao marcar parcela do cartao como paga', async () => {
     const installment = {
-      id: 20, type: 'expense' as const, amount: 120, description: 'Parcela', date: '2026-01-20',
+      id: 20, type: 'expense' as const, amount: 120, description: 'Parcela', date: `${currentMonth}-20`,
       status: 'pending' as const, isCreditCard: true, creditCardId: 5, accountId: null,
     }
     vi.mocked(useData).mockImplementation((store) => {
@@ -245,7 +244,7 @@ describe('TransactionList — mudança de status', () => {
 
   it('bloqueia pagamento de parcela quando o cartao legado nao tem conta', async () => {
     const installment = {
-      id: 21, type: 'expense' as const, amount: 120, description: 'Parcela legada', date: '2026-01-20',
+      id: 21, type: 'expense' as const, amount: 120, description: 'Parcela legada', date: `${currentMonth}-20`,
       status: 'pending' as const, isCreditCard: true, creditCardId: 6, accountId: null,
     }
     vi.mocked(useData).mockImplementation((store) => {
@@ -273,7 +272,7 @@ describe('TransactionList — mudança de status', () => {
     render(<TransactionList />)
 
     await waitFor(() => expect(screen.getByText('Farmácia')).toBeInTheDocument())
-    await userEvent.click(screen.getAllByRole('button')[3])
+    await userEvent.click(screen.getByRole('button', { name: 'common.actions' }))
     await userEvent.click(screen.getByText('transactions.actions.markPaid'))
 
     expect(screen.getByText('transactions.statusChange.title.paid')).toBeInTheDocument()
@@ -288,7 +287,7 @@ describe('TransactionList — mudança de status', () => {
   })
 
   it('aplica uma transferência paga nas duas contas após a confirmação', async () => {
-    const transfer = { id: 4, type: 'transfer' as const, amount: 100, description: 'Reserva', date: '2026-01-21', status: 'pending' as const, accountId: 1, toAccountId: 2 }
+    const transfer = { id: 4, type: 'transfer' as const, amount: 100, description: 'Reserva', date: `${currentMonth}-21`, status: 'pending' as const, accountId: 1, toAccountId: 2 }
     vi.mocked(useData).mockImplementation((store) => {
       if (store === 'transactions') return [transfer] as never
       if (store === 'accounts') return transferAccounts as never
@@ -301,7 +300,7 @@ describe('TransactionList — mudança de status', () => {
     render(<TransactionList />)
 
     await waitFor(() => expect(screen.getByText('Reserva')).toBeInTheDocument())
-    await userEvent.click(screen.getAllByRole('button')[3])
+    await userEvent.click(screen.getByRole('button', { name: 'common.actions' }))
     await userEvent.click(screen.getByText('transactions.actions.markPaid'))
 
     expect(screen.getByText(/transactions\.statusChange\.payTransfer/)).toHaveTextContent('Origem')
@@ -316,12 +315,6 @@ describe('TransactionList — mudança de status', () => {
 
   it('exibe a lista de transações antes do resumo na visão mensal', async () => {
     render(<TransactionList />)
-
-    // Botões: [0] new, [1] list-view, [2] monthly-view
-    await userEvent.click(screen.getAllByRole('button')[2])
-    for (let month = 0; month < 7; month += 1) {
-      await userEvent.click(screen.getAllByRole('button')[3])
-    }
 
     await waitFor(() => expect(screen.getByText('Mercado')).toBeInTheDocument())
 
