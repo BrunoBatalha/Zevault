@@ -96,63 +96,81 @@
 
   "landing": {
     "nav": {
+      "ariaLabel": "Home page navigation",
+      "benefits": "Security",
       "features": "Features",
       "privacy": "Privacy",
-      "backup": "Backup",
-      "accessSystem": "Access System",
-      "openMenu": "Open menu"
+      "accessSystem": "Use with local data",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
     },
     "hero": {
-      "badge": "Local-first and under your control",
-      "title": "Financial Control",
-      "titleHighlight": "Directly in Your Browser.",
-      "description": "Organize your finances in the browser using <strong>IndexedDB</strong>. Data in this MVP stays in this browser profile, without a remote account.",
-      "cta": "Get Started Free",
-      "docs": "View Documentation"
+      "badge": "Local-first financial control",
+      "title": "Your finances are personal.",
+      "titleHighlight": "Your data should be too.",
+      "description": "Organize accounts, transactions, cards, and installments without sending your financial life to a third-party central database. By default, data stays in this browser.",
+      "cta": "Use without an account",
+      "secondaryCta": "See how it works",
+      "proof": { "noSignup": "No signup", "free": "No central transaction database", "offline": "Works offline" }
+    },
+    "preview": {
+      "ariaLabel": "Illustrative preview of the Zevault financial dashboard",
+      "title": "Zevault — local financial database",
+      "securityLabel": "Your entries remain on this device by default",
+      "balance": "Total balance", "balanceValue": "$8,420",
+      "committed": "Already committed", "committedValue": "$2,180",
+      "available": "Available after", "availableValue": "$6,240",
+      "cashFlow": "Cash flow", "lastDays": "Last 30 days",
+      "recent": "Recent activity", "income": "Salary", "incomeValue": "+ $5,200",
+      "expense": "Groceries", "expenseValue": "− $286", "reminder": "2 bills are due this week"
+    },
+    "evidence": {
+      "text": "of Brazilian Internet users aged 16 or older are concerned or very concerned about how companies use their personal data.",
+      "source": "2023 ICT Panel — Cetic.br/NIC.br"
+    },
+    "benefits": {
+      "eyebrow": "Security by architecture",
+      "title": "Less exposed data. Less blind trust in third parties.",
+      "subtitle": "Zevault reduces the need to share financial data: the primary database stays in your browser, and you choose when it leaves.",
+      "exposure": { "title": "No central server holding your transactions", "description": "Everyday use happens locally. Your entries are not automatically sent to a Zevault database." },
+      "account": { "title": "No remote account to protect", "description": "You do not need to provide an email, create a password, or maintain a financial profile on our servers to use the system." },
+      "transfer": { "title": "Sync only when you request it", "description": "When changing devices, the optional transfer uses end-to-end encryption and a temporary remote copy." }
     },
     "features": {
-      "title": "Why choose a Local-First architecture?",
-      "subtitle": "Unlike traditional cloud systems, Zevault puts you in control. We eliminate latency and the risk of third-party data leaks.",
-      "storage": {
-        "title": "Local Storage",
-        "description": "We use your browser's native database. This means the system works offline and loads instantly, without waiting for slow APIs."
-      },
-      "privacy": {
-        "title": "Data in your browser",
-        "description": "By default, your transactions stay in this browser. Optional synchronization sends only a temporary end-to-end encrypted copy to Firebase."
-      },
-      "backup": {
-        "title": "Backup and Portability",
-        "description": "Export a JSON file to keep a copy or move your data. Encryption is not implemented for the exported file."
-      }
+      "eyebrow": "Everything in one place",
+      "title": "Features to manage today and prepare for tomorrow",
+      "subtitle": "From your first entry to a view of the coming months, every feature helps you understand your financial life.",
+      "accounts": { "title": "Accounts and balances", "description": "Add your accounts and track a consolidated balance for one reliable view of the money available." },
+      "transactions": { "title": "Income, expenses, and transfers", "description": "Record paid or pending activity and review everything in an easy-to-follow monthly list." },
+      "cards": { "title": "Cards and installment purchases", "description": "Track limits, due dates, and installments. Zevault spreads purchases across months so their future impact stays visible." },
+      "future": { "title": "Commitments and future expenses", "description": "See upcoming and overdue bills plus projections by category, so you can act before your budget gets tight." },
+      "organization": { "title": "Categories and cost centers", "description": "Organize entries in a way that makes sense to you and discover where your money is being used." },
+      "backup": { "title": "Backup and device transfer", "description": "Export and import your data whenever you want, or use temporary sync to move your database to another device." }
     },
-    "comparison": {
-      "title": "Your financial data shouldn't live on someone else's computer.",
-      "description": "Most financial apps store your transactions on shared servers. Zevault flips this logic. The browser is the operating system, and the database is yours.",
-      "offlineFirst": "Works without internet (Offline-First)",
-      "noFees": "No server fees",
-      "compliant": "You control export and removal of local data",
-      "terminal": {
-        "dbLocation": "Database Location:",
-        "dbLocationValue": "Localhost (IndexedDB)",
-        "externalAccess": "External Access:",
-        "externalAccessValue": "No first-party backend",
-        "encryption": "Encryption:",
-        "encryptionValue": "End-to-end during sync",
-        "systemInit": "> System initialized.",
-        "connecting": "> Connecting to local storage... OK",
-        "syncDisabled": "> Syncing disabled by default for security.",
-        "ready": "> Ready."
-      }
+    "howItWorks": {
+      "eyebrow": "Local-first in practice", "title": "You decide where your financial data travels", "subtitle": "Protection starts by reducing collection and making every transfer an explicit choice.",
+      "setup": { "title": "The database starts in your browser", "description": "Accounts, cards, categories, and transactions are stored in this profile's IndexedDB, with no remote signup." },
+      "record": { "title": "Normal use stays local", "description": "Record, review, and plan your finances offline without transmitting every entry to a server." },
+      "decide": { "title": "You authorize every exit", "description": "Export, import, sync, and deletion happen at your initiative — not as a condition for using the product." }
+    },
+    "privacy": {
+      "eyebrow": "Transparency is security too", "title": "Real protection, without magical promises",
+      "description": "Local-first reduces exposure to a central database, but it does not make your device invulnerable. Zevault explains where each piece of data lives so you can make informed decisions.",
+      "local": "Entries stay in this browser profile by default.",
+      "backup": "The exported backup is your responsibility and does not have its own encryption.",
+      "sync": "Device sync is optional and uses a temporary end-to-end encrypted copy.",
+      "device": "Local protection also depends on the security of your computer, operating system, and browser profile.",
+      "cardLabel": "Where your data lives", "cardValue": "In this browser (IndexedDB)",
+      "exportTitle": "Manual backup", "exportDescription": "Create a file to store or import later. The exported file is not encrypted.",
+      "syncTitle": "Optional sync", "syncDescription": "Temporarily transfer the database between two authorized devices."
     },
     "cta": {
-      "title": "Ready to take back control?",
-      "description": "Start organizing your finances now. No signup, no credit card, just pure software.",
-      "button": "Start System Now"
+      "title": "Control your finances without giving up control of your data",
+      "description": "Manage accounts, cards, installments, and planning in a system that keeps your financial database in the browser by default.",
+      "button": "Start with local data",
+      "note": "No signup, no credit card, and no automatic transmission of your transactions."
     },
-    "footer": {
-      "copyright": "© {{year}} Zevault. Local-First Software."
-    }
+    "footer": { "copyright": "© {{year}} Zevault. Local-first financial control." }
   },
 
   "dashboard": {
