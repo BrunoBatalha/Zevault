@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import type { Transaction } from '@/types'
 import { TransactionModal } from './TransactionModal'
 
 vi.mock('@/core/hooks', () => ({ useData: vi.fn() }))
@@ -276,6 +277,63 @@ describe('TransactionModal — modo edicao', () => {
     render(<TransactionModal isOpen onClose={vi.fn()} transactionToEdit={installments[0] as any} installmentEditScope="all" />)
 
     expect(screen.getByDisplayValue('100')).toBeInTheDocument()
+  })
+
+  it('mantém a ocorrência atual ao editar esta e as próximas compras recorrentes no cartão', async () => {
+    const recurrence = {
+      seriesId: 'series-card',
+      frequency: 'monthly' as const,
+      dayOfMonth: 5,
+      endDate: '2026-02-05',
+      occurrenceDate: '2026-01-05',
+    }
+    const installments: Transaction[] = [
+      { id: 5, amount: 100, description: 'Academia (Parc. 1/2)', type: 'expense' as const, date: '2026-01-20', purchaseDate: '2026-01-05', status: 'pending' as const, isCreditCard: true, creditCardId: 1, installmentCurrent: 1, installmentTotal: 2, groupId: 'purchase-recurring', recurrence },
+      { id: 6, amount: 100, description: 'Academia (Parc. 2/2)', type: 'expense' as const, date: '2026-02-20', purchaseDate: '2026-01-05', status: 'pending' as const, isCreditCard: true, creditCardId: 1, installmentCurrent: 2, installmentTotal: 2, groupId: 'purchase-recurring', recurrence },
+    ]
+    vi.mocked(useData).mockImplementation((store) => {
+      if (store === 'accounts') return accountsList as never
+      if (store === 'creditCards') return cardsList as never
+      if (store === 'transactions') return installments as never
+      return EMPTY as never
+    })
+
+    render(
+      <TransactionModal
+        isOpen
+        onClose={vi.fn()}
+        transactionToEdit={installments[0]}
+        recurrenceEditScope="future"
+      />,
+    )
+
+    expect(screen.getByDisplayValue('2026-01-05')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('200')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('Academia')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByText('transactions.modal.save'))
+
+    await waitFor(() => {
+      expect(db.replaceFutureRecurringTransactions).toHaveBeenCalledWith(
+        'series-card',
+        '2026-01-05',
+        expect.arrayContaining([
+          expect.objectContaining({
+            amount: 100,
+            purchaseDate: '2026-01-05',
+            description: 'Academia (Parc. 1/2)',
+            recurrence: expect.objectContaining({ occurrenceDate: '2026-01-05' }),
+          }),
+          expect.objectContaining({
+            amount: 100,
+            purchaseDate: '2026-02-05',
+            description: 'Academia (Parc. 1/2)',
+            recurrence: expect.objectContaining({ occurrenceDate: '2026-02-05' }),
+          }),
+        ]),
+      )
+    })
+    expect(vi.mocked(db.replaceFutureRecurringTransactions).mock.calls[0][2]).toHaveLength(4)
   })
 
   it('cria imediatamente as ocorrências recorrentes como pendentes sem alterar o saldo', async () => {

@@ -81,13 +81,21 @@ export const TransactionModal = ({
     if (!isOpen) return;
 
     if (transactionToEdit) {
-      const isEditingFullPurchase = transactionToEdit.isCreditCard && installmentEditScope === 'all';
+      const isEditingFutureRecurrence = Boolean(
+        transactionToEdit.recurrence && recurrenceEditScope === 'future',
+      );
+      const isEditingFullPurchase = Boolean(
+        transactionToEdit.isCreditCard
+          && (installmentEditScope === 'all' || isEditingFutureRecurrence),
+      );
       const purchaseTransactions = isEditingFullPurchase && transactionToEdit.groupId
         ? transactions.filter((transaction) => transaction.groupId === transactionToEdit.groupId)
         : [];
       const recurrence = recurrenceEditScope === 'future' ? transactionToEdit.recurrence : undefined;
       setFormData({
-        date: isEditingFullPurchase ? transactionToEdit.purchaseDate ?? transactionToEdit.date : transactionToEdit.date,
+        date: isEditingFullPurchase
+          ? transactionToEdit.purchaseDate ?? recurrence?.occurrenceDate ?? transactionToEdit.date
+          : transactionToEdit.date,
         amount: String(isEditingFullPurchase
           ? sumAmountsInCents(purchaseTransactions.map((transaction) => transaction.amount))
           : transactionToEdit.amount),
