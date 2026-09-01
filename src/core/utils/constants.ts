@@ -11,7 +11,7 @@ export const DB_VERSION = 3;
 /**
  * Versão exibida do aplicativo. Mantenha sincronizada com package.json.
  */
-export const APP_VERSION = '0.0.0';
+export const APP_VERSION = 'v0.0.1';
 
 /**
  * Nomes dos stores do IndexedDB
